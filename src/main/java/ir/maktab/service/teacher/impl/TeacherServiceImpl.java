@@ -25,7 +25,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
     @Override
     public void changeStatus(Teacher teacher, UserStatusEnum status) {
         // some validation
-        teacher.setStatus(status);
+        teacher.getUser().setStatus(status);
     }
 
     @Override

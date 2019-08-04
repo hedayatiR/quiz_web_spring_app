@@ -7,6 +7,8 @@ public interface BaseService<E, PK extends Serializable>  {
 
     E save(E t);
 
+    E update(E t);
+
     Set<E> findAll();
 
     E findOne(PK id);

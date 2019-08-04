@@ -24,7 +24,6 @@ public class Teacher extends BaseEntity<Long> {
     private String firstName;
     private String lastName;
 
-    private UserStatusEnum status;
 
     @ManyToOne
     private Role role;
@@ -41,7 +40,6 @@ public class Teacher extends BaseEntity<Long> {
         this.lastName = lastName;
         this.role = role;
         this.user = user;
-        this.status = UserStatusEnum.INACTIVATED;
     }
 
     @PreRemove

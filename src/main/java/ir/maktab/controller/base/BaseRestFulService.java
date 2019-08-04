@@ -83,12 +83,19 @@ public abstract class BaseRestFulService< E extends BaseEntity<PK>, D extends Ba
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<D> update(@RequestBody D d) {
+
+        System.out.println(d);
+
         if (d.getId() == null) {
             return ResponseEntity
                     .badRequest()
                     .header("id is null", "entity must have an ID to update")
                     .build();
         }
+
+        E e2 = baseMapper.dtoToEntity(d, entityClass);
+
+//        E e = service.update(baseMapper.dtoToEntity(d, entityClass));
         E e = service.save(baseMapper.dtoToEntity(d, entityClass));
         return ResponseEntity.ok(baseMapper.entityToDto(e, dtoClass));
     }

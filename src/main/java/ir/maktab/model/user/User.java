@@ -20,8 +20,12 @@ public class User extends BaseEntity<Long> {
 
     private String password;
 
+    private UserStatusEnum status;
+
+
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
+        this.status = UserStatusEnum.INACTIVATED;
     }
 }
