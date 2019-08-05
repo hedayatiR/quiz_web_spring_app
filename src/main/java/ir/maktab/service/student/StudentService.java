@@ -12,5 +12,5 @@ public interface StudentService extends BaseService<Student, Long> {
 
     Set<Student> findAllByCourseId(Long id);
 
-
+    Set<Student> findActivatedStudents();
 }

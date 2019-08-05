@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Table(name = "roles")
 public class Role extends BaseEntity<Long> {
 
+
     @Column(unique = true)
     private RoleEnum name;
 

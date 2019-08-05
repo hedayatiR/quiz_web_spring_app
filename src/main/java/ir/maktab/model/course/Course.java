@@ -10,8 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Setter
 @Getter
@@ -26,8 +25,11 @@ public class Course extends BaseEntity<Long> {
     @Column(unique = true)
     private Long code;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    @Temporal(TemporalType.DATE)
+    private Date startDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
 
     @ManyToMany
     private Set<Student> students;
@@ -35,7 +37,7 @@ public class Course extends BaseEntity<Long> {
     @ManyToOne
     private Teacher teacher;
 
-    public Course(String name, Long code, LocalDate startDate, LocalDate endDate) {
+    public Course(String name, Long code, Date startDate, Date endDate) {
         this.name = name;
         this.code = code;
         this.startDate = startDate;
@@ -45,11 +47,7 @@ public class Course extends BaseEntity<Long> {
 
     @PreRemove
     private void removeStudentsFromCourse() {
-
         System.out.println("preremove of course");
-//        for (Student student : students) {
-//            u.getGroups().remove(this);
-//        }
         this.students = null;
     }
 
@@ -61,12 +59,24 @@ public class Course extends BaseEntity<Long> {
     }
 
 
-    public void removeStudents(Set<Student> studentsToRemove){
-        this.students.removeAll(studentsToRemove);
-        for (Student student:
-             studentsToRemove) {
-            this.students.remove(student);
+    public void removeStudents(Set<Long> studentsIdToRemove){
+
+        System.out.println(this.students);
+
+        List<Student> studentList = new ArrayList<>(this.students);
+
+        for (Long idStudent:
+                studentsIdToRemove) {
+
+            for (int i = (studentList.size()-1) ; i >=0 ; i--) {
+                if (studentList.get(i).getId() == idStudent){
+                    studentList.remove(i);
+                    break;
+                }
+            }
         }
+        Set<Student> targetSet = new HashSet<>(studentList);
+        this.students = targetSet;
 
         System.out.println(this.students);
     }

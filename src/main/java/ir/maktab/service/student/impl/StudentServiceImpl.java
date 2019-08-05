@@ -26,9 +26,16 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
         student.getUser().setStatus(status);
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public Set<Student> findAllByCourseId(Long id) {
         return repository.findByCoursesId(id);
+    }
+
+    @Override
+    public Set<Student> findActivatedStudents() {
+        return repository.findByUserStatus(UserStatusEnum.ACTIVATED);
     }
 
 

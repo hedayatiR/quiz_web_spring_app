@@ -5,6 +5,7 @@ import ir.maktab.model.course.Course;
 import ir.maktab.model.role.Role;
 import ir.maktab.model.user.User;
 import ir.maktab.model.user.UserStatusEnum;
+import ir.maktab.repository.RoleRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

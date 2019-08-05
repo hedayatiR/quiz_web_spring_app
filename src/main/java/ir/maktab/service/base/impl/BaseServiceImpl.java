@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -51,11 +52,13 @@ public abstract class BaseServiceImpl<E extends BaseEntity, PK extends Serializa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<E> findAll() {
         return new HashSet<>(repository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public E findOne(PK id) {
         return repository.getOne(id);
     }
@@ -66,6 +69,7 @@ public abstract class BaseServiceImpl<E extends BaseEntity, PK extends Serializa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long countAll() {
         return repository.count();
     }

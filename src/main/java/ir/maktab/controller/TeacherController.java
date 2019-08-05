@@ -36,5 +36,13 @@ public class TeacherController extends BaseRestFulService<Teacher, TeacherDto, L
         return ResponseEntity.ok(baseMapper.entityToDtoSet(teachers, TeacherDto.class));
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/activated")
+    public ResponseEntity<Set<TeacherDto>> findActivatedTeachers() {
+        Set<Teacher> teachers = service.findActivatedTeachers();
+        if (teachers == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(baseMapper.entityToDtoSet(teachers, TeacherDto.class));
+    }
+
 
 }

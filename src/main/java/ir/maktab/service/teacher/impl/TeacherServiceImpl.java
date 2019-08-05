@@ -29,8 +29,15 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<Teacher> findByCourseId(Long id) {
         return repository.findByCoursesId(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Teacher> findActivatedTeachers() {
+        return repository.findByUserStatus(UserStatusEnum.ACTIVATED);
     }
 
 }

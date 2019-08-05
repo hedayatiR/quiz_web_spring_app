@@ -2,6 +2,7 @@ package ir.maktab.mapper.base.impl;
 
 import ir.maktab.mapper.base.BaseMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ public class BaseMapperImpl<E,D> implements BaseMapper<E,D> {
 
     protected ModelMapper modelMapper;
 
+    @Autowired
     public BaseMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

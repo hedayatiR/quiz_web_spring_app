@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -49,16 +48,15 @@ public class CourseController extends BaseRestFulService<Course, CourseDto, Long
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{courseId}/addStudents")
-    public ResponseEntity<CourseDto> addStudents(@RequestBody Set<Student> students, @PathVariable("courseId") Long id) {
-        Course course = service.addStudents(id, students);
+    public ResponseEntity<CourseDto> addStudents(@RequestBody Set<Long> studentsId, @PathVariable("courseId") Long id) {
+
+        Course course = service.addStudents(id, studentsId);
         return ResponseEntity.ok(baseMapper.entityToDto(course, CourseDto.class));
     }
 
-    //TODO
-    // remove some students from students of a course
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{courseId}/removeStudents")
-    public ResponseEntity<CourseDto> removeStudents(@RequestBody Set<Student> students, @PathVariable("courseId") Long id) {
-        Course course = service.removeStudents(id, students);
+    public ResponseEntity<CourseDto> removeStudents(@RequestBody Set<Long> studentsId, @PathVariable("courseId") Long id) {
+        Course course = service.removeStudents(id, studentsId);
         return ResponseEntity.ok(baseMapper.entityToDto(course, CourseDto.class));
     }
 

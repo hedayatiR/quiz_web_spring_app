@@ -9,9 +9,9 @@ import java.util.Set;
 
 public interface CourseService extends BaseService<Course, Long> {
 
-    Course removeStudents(Long id, Set<Student> students);
+    Course removeStudents(Long id, Set<Long> studentsId);
 
-    Course addStudents(Long id, Set<Student> students);
+    Course addStudents(Long id, Set<Long> studentsId);
 
     Course setTeacher(Long id, Teacher teacher);
 

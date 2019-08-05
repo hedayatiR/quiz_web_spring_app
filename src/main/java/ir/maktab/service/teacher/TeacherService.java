@@ -14,4 +14,6 @@ public interface TeacherService extends BaseService<Teacher, Long> {
     void changeStatus(Teacher teacher, UserStatusEnum status);
 
     Set<Teacher> findByCourseId(Long id);
+
+    Set<Teacher> findActivatedTeachers();
 }
