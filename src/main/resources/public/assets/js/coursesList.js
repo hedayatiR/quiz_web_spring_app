@@ -72,20 +72,29 @@ $(document).ready(function () {
                 $table.bootstrapTable({
                     data: coursesJson
                 });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                switch (xhr.status) {
+                    case 403:
+                        // Take action, referencing xhr.responseText as needed.
+                        printErrorMessage('به این سرویس دسترسی ندارید. برای ورود' + '<a href="./login.html"> اینجا </a>' + '  را کلیلک کنید');
+                        break;
+                }
             }
         }); // end of ajax
 
         // 2. oline operation - END
     }
 
-    var form = $('#editUserForm');
+    var form = $('#createCourseForm');
 
     // on click of تایید - START ------------------------------------------------
     $(form).submit(function (e) {
 
-        var message = $('#messageModal');
+        console.log("createCourseForm clicked")
         e.preventDefault();
-        
+        var message = $('#messageModal');
+
         var course = {};
 
         course.name = $("#name_id").val();
@@ -130,7 +139,7 @@ $(document).ready(function () {
 
     // on click of بازگشت - START ------------------------------------------------
 
-    $("#editUserForm").on("click", ".btn-danger", function (e) {
+    form.on("click", ".btn-danger", function (e) {
         e.preventDefault();
         console.log("return");
         document.getElementById('id01').style.display = 'none';
@@ -157,62 +166,13 @@ $(document).ready(function () {
 function operateFormatter() {
     return '<a href="#" class="deleteTeacher btn btn-danger btn-xs"> <i class="fa fa-trash-o"></i> حذف استاد از درس </a> &nbsp;' +
         '<a href="#" class="editTeacher btn btn-info btn-xs"><i class="fa fa-edit"></i> تغییر استاد </a> &nbsp;' +
-        '<a href="#" class="addStudents btn btn-success btn-xs"> اضافه کردن دانشجو </a>';
+        '<a href="#" class="addStudents btn btn-warning btn-xs"> اضافه کردن دانشجو </a> &nbsp;' + 
+        '<a href="#" class="showStudents btn btn-success btn-xs"> لیست دانشجویان درس </a>'
+        
+        ;
 }
 
 window.operateEvents = {
-    'click .toggle': function (e, value, selectedUserToggle, index) {
-
-        var message = $('#message');
-        e.preventDefault();
-
-
-        if (selectedUserToggle.user.status === "ACTIVATED") {
-            selectedUserToggle.user.status = "INACTIVATED";
-        } else if (selectedUserToggle.user.status === "INACTIVATED") {
-            selectedUserToggle.user.status = "ACTIVATED";
-        }
-
-        var destURL;
-        if (selectedUserToggle.role.name === "STUDENT") {
-            destURL = "http://localhost:8080/api/students";
-        } else if ((selectedUserToggle.role.name === "TEACHER")) {
-            destURL = "http://localhost:8080/api/teachers";
-        }
-
-
-        $.ajax({
-            type: "PUT",
-            contentType: "application/json",
-            url: destURL,
-            data: JSON.stringify(selectedUserToggle),
-            dataType: 'json',
-            success: function (data, textStatus, xhr) {
-
-                $table.bootstrapTable('updateByUniqueId', {
-                    id: selectedUserToggle.id,
-                    row: selectedUserToggle
-                });
-
-                console.log(xhr);
-
-                $(message).removeClass('display-none');
-                $(message).removeClass('alert-warning');
-                $(message).addClass('alert-success');
-                $("#message span strong").text('تغییر دسترسی با موفقیت انجام شد.');
-            },
-
-            error: function (e2) {
-                console.log("ERROR: ", e2);
-                $(message).removeClass('display-none');
-                $(message).removeClass('alert-success');
-                $(message).addClass('alert-warning');
-                $("#message span strong").text('خطایی در تغییر دسترسی کاربر رخ داده!');
-            }
-        }); // end of ajax
-
-    }, // end of toggle event handler
-
     'click .deleteTeacher': function (e, value, selectedCourse, index) {
 
         if (confirm("مطمئنی؟")) {
@@ -264,6 +224,12 @@ window.operateEvents = {
         
         var queryString = "?id=" + selectedCourse.id + "&name=" + selectedCourse.name;
         window.location.href = "addStudentsToCourse.html" + queryString;
+    }, // end of editTeacher event handler
+
+    'click .showStudents': function (e, value, selectedCourse, index) {
+        
+        var queryString = "?id=" + selectedCourse.id + "&name=" + selectedCourse.name;
+        window.location.href = "showStudentsOfCourse.html" + queryString;
     } // end of editTeacher event handler
 
 }
@@ -273,4 +239,13 @@ function teacherNmeFormatter(value, row, index) {
         return "-";
     else
         return row.teacher.firstName + " " + row.teacher.lastName;
+}
+
+function printErrorMessage(text) {
+
+    $("#message").removeClass('display-none');
+    $("#message").removeClass('alert-success');
+    $("#message").addClass('alert-warning');
+    $("#message span strong").html(text);
+
 }

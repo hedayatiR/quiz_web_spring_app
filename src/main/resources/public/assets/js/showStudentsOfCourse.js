@@ -6,7 +6,6 @@ $(document).ready(function () {
     $table = $('#table');
 
 
-
     courseId = getParameterByName('id');
     courseName = getParameterByName('name');
 
@@ -146,27 +145,12 @@ $(document).ready(function () {
         // 2. oline operation - START
         $.ajax({
             method: "GET",
-            url: "http://localhost:8080/api/students/activated",
+            url: "http://localhost:8080/api/students/findByCourse/" + courseId,
             success: function (studentsJson, textStatus, xhr) {
                 // fill table
                 $table.bootstrapTable({
                     data: studentsJson
                 });
-
-                console.log(studentsJson);
-                // check students attended in this course before
-                studentsJson.forEach(function (itemStudent, indexStudent) {
-
-                    console.log(courseId);
-
-                    for (var itemCourse of itemStudent.courses) {
-                        console.log(itemCourse.id);
-                        if (Number(itemCourse.id) === Number(courseId)) {
-                            $("#table").bootstrapTable("check", indexStudent);
-                            break;
-                        }
-                    } // END of inner for
-                }); // END of outer foreach
             },
 
             error: function (xhr, ajaxOptions, thrownError) {
@@ -181,7 +165,6 @@ $(document).ready(function () {
 
         // 2. oline operation - END
     }
-
 
 
     var $applyBtn = $('#applyBtn');
@@ -211,7 +194,10 @@ $(document).ready(function () {
 
             error: function (e2) {
                 console.log("ERROR: ", e2);
-                printErrorMessage('خطایی در تغییرات دانشجویان رخ داده!');
+                $(message).removeClass('display-none');
+                $(message).removeClass('alert-success');
+                $(message).addClass('alert-warning');
+                $("#message span strong").text('خطایی در تغییرات دانشجویان رخ داده!');
             }
         }); // end of ajax
 

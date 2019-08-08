@@ -25,8 +25,8 @@ public class Teacher extends BaseEntity<Long> {
     private String lastName;
 
 
-    @ManyToOne
-    private Role role;
+//    @ManyToOne
+//    private Role role;
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
@@ -35,10 +35,9 @@ public class Teacher extends BaseEntity<Long> {
     private Set<Course> courses;
 
 
-    public Teacher(String firstName, String lastName, Role role, User user) {
+    public Teacher(String firstName, String lastName, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
         this.user = user;
     }
 

@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface StudentService extends BaseService<Student, Long> {
 
-    void changeStatus(Student student, UserStatusEnum status);
+    Student changeStatus(Long id);
 
     Set<Student> findAllByCourseId(Long id);
 

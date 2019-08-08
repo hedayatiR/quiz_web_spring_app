@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface TeacherService extends BaseService<Teacher, Long> {
 
-    void changeStatus(Teacher teacher, UserStatusEnum status);
+    Teacher changeStatus(Long id);
 
     Set<Teacher> findByCourseId(Long id);
 

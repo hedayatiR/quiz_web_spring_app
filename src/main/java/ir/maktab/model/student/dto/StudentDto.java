@@ -16,7 +16,6 @@ import java.util.Set;
 public class StudentDto extends BaseDTO<Long> {
     private String firstName;
     private String lastName;
-    private RoleDto role;
     private UserDto user;
 
     private Set<CourseDto> courses;

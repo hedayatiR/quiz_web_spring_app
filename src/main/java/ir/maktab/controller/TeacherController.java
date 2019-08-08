@@ -8,12 +8,11 @@ import ir.maktab.model.teacher.Teacher;
 import ir.maktab.model.teacher.dto.TeacherDto;
 import ir.maktab.service.teacher.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -21,6 +20,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController extends BaseRestFulService<Teacher, TeacherDto, Long, TeacherService, TeacherMapper> {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Autowired
     public TeacherController(TeacherService baseService, TeacherMapper teacherMapper) {
@@ -44,5 +47,13 @@ public class TeacherController extends BaseRestFulService<Teacher, TeacherDto, L
         return ResponseEntity.ok(baseMapper.entityToDtoSet(teachers, TeacherDto.class));
     }
 
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{id}/changeState")
+    public ResponseEntity changeState(@PathVariable("id") Long id) {
+
+        if (service.changeStatus(id) == null)
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity(HttpStatus.OK);
+    }
 
 }

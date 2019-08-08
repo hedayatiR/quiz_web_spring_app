@@ -31,27 +31,25 @@
                 <ul class="nav navbar-nav ml-auto">
 
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" href="/makeCourse">ایجاد دوره</a>
+                        <a class="nav-link" href="usersList.html">لیست کاربران</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" href="">لیست کاربران</a>
-                    </li>
-
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" href="courseList.html">لیست دوره ها</a>
+                        <a class="nav-link" href="coursesList.html">لیست دوره ها</a>
                     </li>
 
                 </ul>
 
             </div>
 
-            <h10> rezxa </h10>
-            &nbsp;
-            <h10> : کاربر</h10>
-            &nbsp;
-            <i class="fas fa-user"></i>
-            &nbsp;
+            <div id="userData">
+                <h10 id="userNameProfile"> dummy </h10>
+                &nbsp;
+                <h10> : کاربر</h10>
+                &nbsp;
+                <i class="fas fa-user"></i>
+                &nbsp;
+            </div>
             <a class="btn btn-danger" style="margin-left: 5px;" href="/logout">خروج</a>
 
         </div>
@@ -74,7 +72,7 @@
 
                 <thead class="bill-header cs">
                     <tr>
-                        <th data-field="state" data-checkbox="true"></th>
+                        <!-- <th data-field="state" data-checkbox="true"></th> -->
 
                         <th data-field="id">شناسه</th>
                         <th data-field="name">عنوان دوره</th>
@@ -109,9 +107,9 @@
 
         <div class="modal-content container" style="margin-top : 5%;">
             <div class="row text-right">
-                <div id="editUserFormParent" class="col-md-12">
+                <div id="createCourseFormParent" class="col-md-12">
                     <h1 class="text-right">اضافه کردن دوره</h1>
-                    <form id="editUserForm" class="text-right">
+                    <form id="createCourseForm" class="text-right">
 
                         <div class="d-flex">
                             <div class="form-group"><label>عنوان دوره</label>
@@ -122,15 +120,17 @@
 
                         <div class="d-flex">
                             <div class="form-group"><label>تاریخ شروع</label>
-                                <input id="startDate_id" class="form-control pdate" type="text" placeholder="تاریخ شروع دوره" required>
+                                <input id="startDate_id" class="form-control pdate" type="text"
+                                    placeholder="تاریخ شروع دوره" required>
                             </div>
                             <div class="form-group" style="font-size: 16px;"><label>تاریخ پایان</label>
-                                <input id="endDate_id" class="form-control pdate" type="text" placeholder="تاریخ پایان دوره" required> 
+                                <input id="endDate_id" class="form-control pdate" type="text"
+                                    placeholder="تاریخ پایان دوره" required>
                             </div>
                         </div>
 
                         <button class="btn btn-danger" type="button">بازگشت</button>
-                        <button class="btn btn-success" type="button">تایید</button>
+                        <button class="btn btn-success" type="submit">تایید</button>
 
                     </form>
                 </div>
@@ -148,7 +148,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="assets/js/coursesList.js"></script>
+    <script src="assets/js/userNameCookie.js"></script>
     <script>
         var objCal1 = new AMIB.persianCalendar('startDate_id');
         var objCal2 = new AMIB.persianCalendar('endDate_id');

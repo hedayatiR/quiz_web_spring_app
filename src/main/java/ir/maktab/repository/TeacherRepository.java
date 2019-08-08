@@ -10,5 +10,5 @@ import java.util.Set;
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher,Long> {
     Set<Teacher> findByCoursesId(Long id);
-    Set<Teacher> findByUserStatus(UserStatusEnum status);
+    Set<Teacher> findByUserEnabled(boolean enabled);
 }

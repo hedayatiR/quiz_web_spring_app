@@ -11,5 +11,5 @@ import java.util.Set;
 public interface StudentRepository extends JpaRepository<Student,Long> {
 
     Set<Student> findByCoursesId(Long id);
-    Set<Student> findByUserStatus(UserStatusEnum status);
+    Set<Student> findByUserEnabled(boolean enabled);
 }

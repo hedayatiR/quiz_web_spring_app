@@ -22,19 +22,15 @@ public class Student extends BaseEntity<Long> {
     private String firstName;
     private String lastName;
 
-    @ManyToOne
-    private Role role;
-
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
 
-    public Student(String firstName, String lastName, Role role, User user) {
+    public Student(String firstName, String lastName, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
         this.user = user;
     }
 

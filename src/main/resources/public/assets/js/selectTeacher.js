@@ -3,8 +3,12 @@ var $table;
 var courseId;
 var test = 0;
 $(document).ready(function () {
+
+
     $table = $('#table');
-    
+
+
+
     courseId = getParameterByName('id');
     courseName = getParameterByName('name');
 
@@ -47,10 +51,19 @@ $(document).ready(function () {
         }];
 
         $(function () {
+            if (teacherJson.length < 1) {
+                $table.bootstrapTable({
+                    formatNoMatches: function () {
+                        return 'No data found';
+                    }
+                });
+
+            } else {
                 $table.bootstrapTable({
                     data: teacherJson
-                    });
                 });
+            }
+        });
 
         // 1. offline test - END
 
@@ -61,10 +74,25 @@ $(document).ready(function () {
             method: "GET",
             url: "http://localhost:8080/api/teachers/activated",
             success: function (teachersJson, textStatus, xhr) {
-
+                if (teachersJson.length < 1) {
+                    $table.bootstrapTable({
+                        formatNoMatches: function () {
+                            return 'موردی یافت نشد';
+                        }
+                    });
+                } else {
                     $table.bootstrapTable({
                         data: teachersJson
                     });
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                switch (xhr.status) {
+                    case 403:
+                        // Take action, referencing xhr.responseText as needed.
+                        printErrorMessage('به این سرویس دسترسی ندارید. برای ورود' + '<a href="./login.html"> اینجا </a>' + '  را کلیلک کنید');
+                        break;
+                }
             }
         }); // end of ajax
 
@@ -96,7 +124,7 @@ window.operateEvents = {
             success: function (data, textStatus, xhr) {
 
                 console.log(xhr);
-                
+
                 // back to coursesList.html
                 window.location.href = "coursesList.html";
 
@@ -117,7 +145,31 @@ window.operateEvents = {
 
     } // end of select event handler
 
-    
+
+}
+
+
+function roleFormatter(value, row, index) {
+    var text = "";
+    for (var i = 0; i < row.user.roles.length; i++) {
+
+        if ((row.user.roles[i]).name == "STUDENT")
+            text += "دانشجو";
+        else if ((row.user.roles[i]).name == "TEACHER")
+            text += "استاد";
+
+    }
+
+    return text;
+}
+
+function enabledFormatter(value, row, index) {
+    var text = "";
+
+    if (row.user.enabled)
+        return "فعال";
+    else
+        return "غیرفعال";
 }
 
 
@@ -130,4 +182,13 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function printErrorMessage(text) {
+
+    $("#message").removeClass('display-none');
+    $("#message").removeClass('alert-success');
+    $("#message").addClass('alert-warning');
+    $("#message span strong").html(text);
+
 }

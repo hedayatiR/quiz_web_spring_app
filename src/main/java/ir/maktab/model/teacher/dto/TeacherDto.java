@@ -13,6 +13,5 @@ import lombok.Data;
 public class TeacherDto extends BaseDTO<Long> {
     private String firstName;
     private String lastName;
-    private RoleDto role;
     private UserDto user;
 }
