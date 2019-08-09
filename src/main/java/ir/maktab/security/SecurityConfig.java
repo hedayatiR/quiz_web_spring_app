@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successForwardUrl("/login/succeed")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/").deleteCookies("JSESSIONID", "user")
+                .logoutSuccessUrl("/").deleteCookies("JSESSIONID", "account")
         ;
     }
 

@@ -80,7 +80,7 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
     @Override
     @Transactional(readOnly = true)
     public Set<Course> findAllByTeacherUsername(String username) {
-        return repository.findByTeacherUserUsername(username);
+        return repository.findByTeacherAccountUsername(username);
     }
 
 

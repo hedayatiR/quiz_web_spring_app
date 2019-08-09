@@ -1,4 +1,4 @@
-package ir.maktab.model.user;
+package ir.maktab.model.account;
 
 import ir.maktab.model.base.BaseEntity;
 import ir.maktab.model.role.Role;
@@ -16,8 +16,8 @@ import java.util.Collection;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "users")
-public class User extends BaseEntity<Long> implements UserDetails {
+@Table(name = "Accounts")
+public class Account extends BaseEntity<Long> implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -32,14 +32,14 @@ public class User extends BaseEntity<Long> implements UserDetails {
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "Accounts_roles",
+            joinColumns = @JoinColumn(name = "Account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     protected Collection<Role> roles;
 
 
-    public User(String username, String password, Collection<Role> roles) {
+    public Account(String username, String password, Collection<Role> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;

@@ -1,7 +1,6 @@
 package ir.maktab.service.student;
 
 import ir.maktab.model.student.Student;
-import ir.maktab.model.user.UserStatusEnum;
 import ir.maktab.service.base.BaseService;
 
 import java.util.Set;

@@ -1,9 +1,7 @@
 package ir.maktab.service.student.impl;
 
-import ir.maktab.model.course.Course;
 import ir.maktab.model.role.Role;
 import ir.maktab.model.student.Student;
-import ir.maktab.model.user.UserStatusEnum;
 import ir.maktab.repository.RoleRepository;
 import ir.maktab.repository.StudentRepository;
 import ir.maktab.service.base.impl.BaseServiceImpl;
@@ -40,7 +38,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
     @Override
     public Student save(Student t) {
 
-        if ( !(t.getUser().getPassword().equals(t.getUser().getRepeatPassword())) ){
+        if ( !(t.getAccount().getPassword().equals(t.getAccount().getRepeatPassword())) ){
             System.out.println("PasswordMismatchException thrown");
             throw new PasswordMismatchException("Passwords mismatch shode!") ;
         }
@@ -48,14 +46,14 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
 
         Collection<Role> roles = new HashSet<>();
         for (Role roleIteration:
-             t.getUser().getRoles()) {
+             t.getAccount().getRoles()) {
             Role role = roleRepository.findByName(roleIteration.getName());
             roles.add(role);
         }
-        t.getUser().setRoles(roles);
+        t.getAccount().setRoles(roles);
 
         // encrypt password
-        t.getUser().setPassword(bCryptPasswordEncoder.encode(t.getUser().getPassword()));
+        t.getAccount().setPassword(bCryptPasswordEncoder.encode(t.getAccount().getPassword()));
 
         return super.save(t);
     }
@@ -64,13 +62,13 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
     @Override
     public Student update(Student student) {
 
-        if( !(student.getUser().getPassword().equals(student.getUser().getRepeatPassword())) )
+        if( !(student.getAccount().getPassword().equals(student.getAccount().getRepeatPassword())) )
             throw new PasswordMismatchException("Passwords Mismatch");
 
-        if (student.getUser().getPassword().isEmpty()){
-            String oldPassword = repository.findById(student.getId()) .get().getUser().getPassword();
-            student.getUser().setPassword(oldPassword);
-            student.getUser().setRepeatPassword(oldPassword);
+        if (student.getAccount().getPassword().isEmpty()){
+            String oldPassword = repository.findById(student.getId()) .get().getAccount().getPassword();
+            student.getAccount().setPassword(oldPassword);
+            student.getAccount().setRepeatPassword(oldPassword);
         }
 
 
@@ -82,7 +80,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
         // some validation
 //        student.getUser().setStatus(status);
         Optional<Student> student = repository.findById(id);
-        student.get().getUser().setEnabled( !(student.get().getUser().isEnabled()) );
+        student.get().getAccount().setEnabled( !(student.get().getAccount().isEnabled()) );
 
         return super.save(student.get());
     }
@@ -98,7 +96,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student, Long, StudentRe
     @Override
     @Transactional(readOnly = true)
     public Set<Student> findActivatedStudents() {
-        return repository.findByUserEnabled(true);
+        return repository.findByAccountEnabled(true);
     }
 
 

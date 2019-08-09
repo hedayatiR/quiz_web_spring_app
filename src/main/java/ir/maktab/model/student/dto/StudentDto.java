@@ -1,12 +1,8 @@
 package ir.maktab.model.student.dto;
 
 import ir.maktab.model.base.BaseDTO;
-import ir.maktab.model.course.Course;
 import ir.maktab.model.course.dto.CourseDto;
-import ir.maktab.model.role.Role;
-import ir.maktab.model.role.dto.RoleDto;
-import ir.maktab.model.user.UserStatusEnum;
-import ir.maktab.model.user.dto.UserDto;
+import ir.maktab.model.account.dto.AccountDto;
 import lombok.Data;
 
 import java.util.Set;
@@ -16,7 +12,7 @@ import java.util.Set;
 public class StudentDto extends BaseDTO<Long> {
     private String firstName;
     private String lastName;
-    private UserDto user;
+    private AccountDto Account;
 
     private Set<CourseDto> courses;
 }

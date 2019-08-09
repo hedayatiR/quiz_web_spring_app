@@ -1,9 +1,8 @@
 package ir.maktab.security.controller;
 
 import ir.maktab.model.role.dto.RoleDto;
-import ir.maktab.model.user.User;
+import ir.maktab.model.account.Account;
 import ir.maktab.security.controller.dto.ConfigDto;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,25 +23,25 @@ public class ConfigController {
             return new ConfigDto("guest");
         }
 
-        User user = (User) principal;
+        Account account = (Account) principal;
         ConfigDto configDTO =
-                new ConfigDto(user.getUsername());
+                new ConfigDto(account.getUsername());
 
-        configDTO.setRoles(user.getRoles().stream().map(r -> new RoleDto(r.getName())).collect(Collectors.toSet()));
+        configDTO.setRoles(account.getRoles().stream().map(r -> new RoleDto(r.getName())).collect(Collectors.toSet()));
 
-        // set cookie again if client removes user cookie handy
+        // set cookie again if client removes account cookie handy
         boolean cookieExisted = false;
         for (Cookie cookie :
                 request.getCookies()) {
-            if (cookie.getName().equals("user")) {
+            if (cookie.getName().equals("account")) {
                 cookieExisted = true;
-                cookie.setValue(user.getUsername());
+                cookie.setValue(account.getUsername());
                 response.addCookie(cookie);
             }
         }
 
         if (!cookieExisted){
-            Cookie cookie = new Cookie("user", user.getUsername());
+            Cookie cookie = new Cookie("account", account.getUsername());
             response.addCookie(cookie);
         }
 

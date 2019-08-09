@@ -1,7 +1,6 @@
 package ir.maktab.security.controller.dto;
 
 import ir.maktab.model.role.dto.RoleDto;
-import ir.maktab.model.user.UserStatusEnum;
 import lombok.Data;
 
 import java.util.Collection;

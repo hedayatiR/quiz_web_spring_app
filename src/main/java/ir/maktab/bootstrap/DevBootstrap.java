@@ -4,12 +4,10 @@ import ir.maktab.model.course.Course;
 import ir.maktab.model.role.Role;
 import ir.maktab.model.student.Student;
 import ir.maktab.model.teacher.Teacher;
-import ir.maktab.model.user.User;
-import ir.maktab.model.user.UserStatusEnum;
+import ir.maktab.model.account.Account;
 import ir.maktab.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -29,15 +27,15 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     private TeacherRepository teacherRepository;
     private RoleRepository roleRepository;
     private CourseRepository courseRepository;
-    private UserRepository userRepository;
+    private AccountRepository AccountRepository;
 
     @Autowired
-    public DevBootstrap(StudentRepository studentRepository, TeacherRepository teacherRepository, RoleRepository roleRepository, CourseRepository courseRepository, UserRepository userRepository) {
+    public DevBootstrap(StudentRepository studentRepository, TeacherRepository teacherRepository, RoleRepository roleRepository, CourseRepository courseRepository, AccountRepository AccountRepository) {
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
+        this.AccountRepository = AccountRepository;
     }
 
 
@@ -66,47 +64,47 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         rolesAdmin.add(roleAdmin);
 
         // admin
-        User admin = new User("admin", bCryptPasswordEncoder.encode("1"), rolesAdmin);
+        Account admin = new Account("admin", bCryptPasswordEncoder.encode("1"), rolesAdmin);
         admin.setEnabled(true);
-        userRepository.save(admin);
+        AccountRepository.save(admin);
 
         // student 1
-        User user1 = new User("reza", bCryptPasswordEncoder.encode("1"), rolesStudent);
-        user1.setEnabled(true);
-        Student student1 = new Student("رضا", "هدایتی" ,user1);
+        Account account1 = new Account("reza", bCryptPasswordEncoder.encode("1"), rolesStudent);
+        account1.setEnabled(true);
+        Student student1 = new Student("رضا", "هدایتی" , account1);
         studentRepository.save(student1);
 
         // student 2
-        User user2 = new User("ahmad", bCryptPasswordEncoder.encode("1"), rolesStudent);
-        user2.setEnabled(true);
-        Student student2 = new Student("احمد", "حسینی", user2);
+        Account account2 = new Account("ahmad", bCryptPasswordEncoder.encode("1"), rolesStudent);
+        account2.setEnabled(true);
+        Student student2 = new Student("احمد", "حسینی", account2);
         studentRepository.save(student2);
 
         // student 3
-        User user3 = new User("naghi", bCryptPasswordEncoder.encode("1"), rolesStudent);
-        user3.setEnabled(false);
-        Student student3 = new Student("نقی", "معمولی", user3);
+        Account account3 = new Account("naghi", bCryptPasswordEncoder.encode("1"), rolesStudent);
+        account3.setEnabled(false);
+        Student student3 = new Student("نقی", "معمولی", account3);
         studentRepository.save(student3);
 
         Collection<Role> rolesTeacher = new HashSet<>();
         rolesTeacher.add(roleTeacher);
 
         // teacher 1
-        User user5 = new User("ali", bCryptPasswordEncoder.encode("1"), rolesTeacher);
-        user5.setEnabled(true);
-        Teacher teacher1 = new Teacher("علی", "واحدی", user5);
+        Account account5 = new Account("ali", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        account5.setEnabled(true);
+        Teacher teacher1 = new Teacher("علی", "واحدی", account5);
         teacherRepository.save(teacher1);
 
         // teacher 2
-        User user6 = new User("homa", bCryptPasswordEncoder.encode("1"), rolesTeacher);
-        user6.setEnabled(true);
-        Teacher teacher2 = new Teacher("هما", "سعادت", user6);
+        Account account6 = new Account("homa", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        account6.setEnabled(true);
+        Teacher teacher2 = new Teacher("هما", "سعادت", account6);
         teacherRepository.save(teacher2);
 
         // teacher 3
-        User user7 = new User("mina", bCryptPasswordEncoder.encode("1"), rolesTeacher);
-        user7.setEnabled(false);
-        Teacher teacher3 = new Teacher("مینا", "ساداتی", user7);
+        Account account7 = new Account("mina", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        account7.setEnabled(false);
+        Teacher teacher3 = new Teacher("مینا", "ساداتی", account7);
         teacherRepository.save(teacher3);
 
 

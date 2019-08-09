@@ -2,9 +2,7 @@ package ir.maktab.model.teacher;
 
 import ir.maktab.model.base.BaseEntity;
 import ir.maktab.model.course.Course;
-import ir.maktab.model.role.Role;
-import ir.maktab.model.user.User;
-import ir.maktab.model.user.UserStatusEnum;
+import ir.maktab.model.account.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,16 +27,16 @@ public class Teacher extends BaseEntity<Long> {
 //    private Role role;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private User user;
+    private Account account;
 
     @OneToMany(mappedBy = "teacher")
     private Set<Course> courses;
 
 
-    public Teacher(String firstName, String lastName, User user) {
+    public Teacher(String firstName, String lastName, Account account) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.user = user;
+        this.account = account;
     }
 
     @PreRemove

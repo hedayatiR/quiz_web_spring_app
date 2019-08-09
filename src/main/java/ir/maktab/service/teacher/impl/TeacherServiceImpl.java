@@ -1,9 +1,7 @@
 package ir.maktab.service.teacher.impl;
 
 import ir.maktab.model.role.Role;
-import ir.maktab.model.student.Student;
 import ir.maktab.model.teacher.Teacher;
-import ir.maktab.model.user.UserStatusEnum;
 import ir.maktab.repository.RoleRepository;
 import ir.maktab.repository.TeacherRepository;
 import ir.maktab.service.base.impl.BaseServiceImpl;
@@ -42,14 +40,14 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
 
         Collection<Role> roles = new HashSet<>();
         for (Role roleIteration :
-                t.getUser().getRoles()) {
+                t.getAccount().getRoles()) {
             Role role = roleRepository.findByName(roleIteration.getName());
             roles.add(role);
         }
-        t.getUser().setRoles(roles);
+        t.getAccount().setRoles(roles);
 
         // encrypt password
-        t.getUser().setPassword(bCryptPasswordEncoder.encode(t.getUser().getPassword()));
+        t.getAccount().setPassword(bCryptPasswordEncoder.encode(t.getAccount().getPassword()));
 
 
         return super.save(t);
@@ -59,13 +57,13 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
     @Override
     public Teacher update(Teacher teacher) {
 
-        if( !(teacher.getUser().getPassword().equals(teacher.getUser().getRepeatPassword())) )
+        if( !(teacher.getAccount().getPassword().equals(teacher.getAccount().getRepeatPassword())) )
             throw new PasswordMismatchException("Passwords Mismatch");
 
-        if (teacher.getUser().getPassword().isEmpty()){
-            String oldPassword = repository.findById(teacher.getId()) .get().getUser().getPassword();
-            teacher.getUser().setPassword(oldPassword);
-            teacher.getUser().setRepeatPassword(oldPassword);
+        if (teacher.getAccount().getPassword().isEmpty()){
+            String oldPassword = repository.findById(teacher.getId()) .get().getAccount().getPassword();
+            teacher.getAccount().setPassword(oldPassword);
+            teacher.getAccount().setRepeatPassword(oldPassword);
         }
 
         return super.update(teacher);
@@ -76,7 +74,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
     public Teacher changeStatus(Long id){
         // some validation
         Optional<Teacher> teacher = repository.findById(id);
-        teacher.get().getUser().setEnabled( !(teacher.get().getUser().isEnabled()) );
+        teacher.get().getAccount().setEnabled( !(teacher.get().getAccount().isEnabled()) );
         return super.save(teacher.get());
     }
 
@@ -90,7 +88,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher, Long, TeacherRe
     @Override
     @Transactional(readOnly = true)
     public Set<Teacher> findActivatedTeachers() {
-        return repository.findByUserEnabled(true);
+        return repository.findByAccountEnabled(true);
     }
 
 }
