@@ -198,7 +198,7 @@ $(document).ready(function () {
 
                         error: function (e2) {
                             console.log("ERROR: ", e2);
-                            printErrorMessage('خطایی در ساخت کاربر جدید رخ داده!');
+                            printErrorMessageModal('خطایی در ساخت کاربر جدید رخ داده!');
                         }
 
                     }); // end of ajax

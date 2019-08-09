@@ -41,6 +41,16 @@ public class CourseController extends BaseRestFulService<Course, CourseDto, Long
     }
 
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/findByTeacherUsername/{username}")
+    public ResponseEntity<Set<CourseDto>> findAllByTeacherUsername(@PathVariable("username") String username) {
+        Set<Course> courses = service.findAllByTeacherUsername(username);
+        if (courses == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(baseMapper.entityToDtoSet(courses, CourseDto.class));
+    }
+
+
+
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{courseId}/setTeacher")
     public ResponseEntity<CourseDto> setTeacher(@RequestBody Teacher teacher, @PathVariable("courseId") Long id) {
         Course course = service.setTeacher(id, teacher);
@@ -59,6 +69,7 @@ public class CourseController extends BaseRestFulService<Course, CourseDto, Long
         Course course = service.removeStudents(id, studentsId);
         return ResponseEntity.ok(baseMapper.entityToDto(course, CourseDto.class));
     }
+
 
 
 }

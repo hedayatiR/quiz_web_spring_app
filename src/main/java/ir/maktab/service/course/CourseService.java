@@ -17,6 +17,8 @@ public interface CourseService extends BaseService<Course, Long> {
 
     Set<Course> findAllByTeacherId(Long id);
 
+    Set<Course> findAllByTeacherUsername(String username);
+
     Set<Course> findAllByStudentId(Long id);
 
 }

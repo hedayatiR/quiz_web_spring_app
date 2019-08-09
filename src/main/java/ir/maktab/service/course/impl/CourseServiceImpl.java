@@ -79,6 +79,13 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
 
     @Override
     @Transactional(readOnly = true)
+    public Set<Course> findAllByTeacherUsername(String username) {
+        return repository.findByTeacherUserUsername(username);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
     public Set<Course> findAllByStudentId(Long id) {
         return repository.findByStudentsId(id);
     }

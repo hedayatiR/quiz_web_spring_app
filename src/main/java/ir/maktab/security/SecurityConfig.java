@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private String[] TEACHER_ACCESS = new String[]{
-            "/api/teachers/**"
+            "/api/courses/findByTeacherUsername/**"
     };
 
     private String[] ADMIN_ACCESS = new String[]{
@@ -71,8 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGNUP_PERMIT).permitAll()
 //                .antMatchers(STUDENT_ACCESS).hasAuthority("STUDENT")
-//                .antMatchers(TEACHER_ACCESS).hasAuthority("TEACHER")
-                .antMatchers("/api/config").hasAnyAuthority("TEACHER", "STUDENT", "ADMIN")
+                .antMatchers(TEACHER_ACCESS).hasAuthority("TEACHER")
+                .antMatchers("/api/config").authenticated()
                 .antMatchers("/api/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
 //                .and()

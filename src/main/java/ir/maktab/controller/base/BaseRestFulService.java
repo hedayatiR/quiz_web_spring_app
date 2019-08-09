@@ -94,7 +94,6 @@ public abstract class BaseRestFulService< E extends BaseEntity<PK>, D extends Ba
         }
 
         E e = service.update(baseMapper.dtoToEntity(d, entityClass));
-//        E e = service.save(baseMapper.dtoToEntity(d, entityClass));
         return ResponseEntity.ok(baseMapper.entityToDto(e, dtoClass));
     }
 
