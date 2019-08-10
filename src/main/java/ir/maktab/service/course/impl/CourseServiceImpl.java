@@ -1,12 +1,12 @@
 package ir.maktab.service.course.impl;
 
 import ir.maktab.model.course.Course;
-import ir.maktab.model.student.Student;
-import ir.maktab.model.teacher.Teacher;
+import ir.maktab.model.user.User;
 import ir.maktab.repository.CourseRepository;
-import ir.maktab.repository.StudentRepository;
+import ir.maktab.repository.UserRepository;
 import ir.maktab.service.base.impl.BaseServiceImpl;
 import ir.maktab.service.course.CourseService;
+import ir.maktab.service.course.exception.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
         implements CourseService {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private UserRepository userRepository;
 
 
     public CourseServiceImpl(CourseRepository repository) {
@@ -30,12 +30,18 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
 
 
     @Override
-    public Course setTeacher(Long id, Teacher teacher) {
+    public Course setTeacher(Long id, Long teacherId) {
         // some validation
-//        if (teacher.getRole().getName() != RoleEnum.TEACHER){
-//            // throw exception
-//            return;
-//        }
+        User teacher = userRepository.findById(teacherId).get();
+
+        if (teacher == null)
+            throw new InvalidInputException("Teacher with this id not found");
+
+
+        if (teacher.getAccount().getRole().getName() != "TEACHER"){
+             throw new InvalidInputException("This user is not teacher");
+        }
+
         Optional<Course> course = repository.findById(id);
         course.get().setTeacher(teacher);
 
@@ -60,10 +66,10 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
             course.get().setStudents(null);
 
         else {
-            Set<Student> students = new HashSet<>();
+            Set<User> students = new HashSet<>();
             for (Long studentId :
                     studentsId) {
-                students.add(studentRepository.findById(studentId).get());
+                students.add(userRepository.findById(studentId).get());
             }
             course.get().setStudents(students);
         }

@@ -24,14 +24,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // dont put two common url in different access
     // for this purpose define a new fiter chain(antmatchers)
     private String[] SIGNUP_PERMIT = new String[]{
-            "/api/students", "/api/teachers"
+            "/api/students", "/api/users"
     };
 
     private String[] STUDENT_ACCESS = new String[]{
             "/api/students/**"
     };
 
-    private String[] TEACHER_ACCESS = new String[]{
+    private String[] USER_ACCESS = new String[]{
             "/api/courses/findByTeacherUsername/**"
     };
 
@@ -69,13 +69,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGNUP_PERMIT).permitAll()
-//                .antMatchers(STUDENT_ACCESS).hasAuthority("STUDENT")
-                .antMatchers(TEACHER_ACCESS).hasAuthority("TEACHER")
-                .antMatchers("/api/config").authenticated()
-                .antMatchers("/api/**").hasAuthority("ADMIN")
-                .anyRequest().authenticated()
-//                .and()
+
+                .anyRequest().permitAll()
+
+//                .antMatchers(HttpMethod.POST, SIGNUP_PERMIT).permitAll()
+////                .antMatchers(STUDENT_ACCESS).hasAuthority("STUDENT")
+//                .antMatchers(USER_ACCESS).hasAuthority("user")
+//                .antMatchers("/api/config").authenticated()
+//                .antMatchers("/api/**").hasAuthority("ADMIN")
+//                .anyRequest().authenticated()
+////                .and()
 //                .exceptionHandling().authenticationEntryPoint(myAuthExceptionHandlerEntryPoint)
                 .and()
                 .formLogin()

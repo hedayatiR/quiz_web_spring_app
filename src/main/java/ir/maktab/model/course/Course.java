@@ -1,15 +1,13 @@
 package ir.maktab.model.course;
 
 import ir.maktab.model.base.BaseEntity;
-import ir.maktab.model.student.Student;
-import ir.maktab.model.teacher.Teacher;
+import ir.maktab.model.user.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.*;
 
 @Setter
@@ -22,8 +20,8 @@ public class Course extends BaseEntity<Long> {
 
     private String name;
 
-    @Column(unique = true)
-    private Long code;
+//    @Column(unique = true)
+//    private Long code;
 
     @Temporal(TemporalType.DATE)
     private Date startDate;
@@ -32,14 +30,18 @@ public class Course extends BaseEntity<Long> {
     private Date endDate;
 
     @ManyToMany
-    private Set<Student> students;
+    @JoinTable(name = "courses_students",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private Set<User> students;
 
     @ManyToOne
-    private Teacher teacher;
+    private User teacher;
 
-    public Course(String name, Long code, Date startDate, Date endDate) {
+
+    public Course(String name, Date startDate, Date endDate) {
         this.name = name;
-        this.code = code;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -52,7 +54,7 @@ public class Course extends BaseEntity<Long> {
     }
 
 
-    public void addStudents(Set<Student> studentsToAdd){
+    public void addStudents(Set<User> studentsToAdd){
         if (this.students == null)
             this.students = new HashSet<>();
         this.students.addAll(studentsToAdd);
@@ -63,19 +65,19 @@ public class Course extends BaseEntity<Long> {
 
         System.out.println(this.students);
 
-        List<Student> studentList = new ArrayList<>(this.students);
+        List<User> studentList = new ArrayList<>(this.students);
 
         for (Long idStudent:
                 studentsIdToRemove) {
 
-            for (int i = (studentList.size()-1) ; i >=0 ; i--) {
+            for (int i = (studentList.size()-1); i >=0 ; i--) {
                 if (studentList.get(i).getId() == idStudent){
                     studentList.remove(i);
                     break;
                 }
             }
         }
-        Set<Student> targetSet = new HashSet<>(studentList);
+        Set<User> targetSet = new HashSet<>(studentList);
         this.students = targetSet;
 
         System.out.println(this.students);
@@ -85,7 +87,6 @@ public class Course extends BaseEntity<Long> {
     public String toString() {
         return "Course{" +
                 "name='" + name + '\'' +
-                ", code=" + code +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 '}';

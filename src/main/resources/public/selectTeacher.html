@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/farsiFont.css">
+    <link rel="stylesheet" href="assets/css/manager.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button"
+        style="background-color: rgb(220,232,234);">
+        <div class="container">
+
+            <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navcol-1">
+
+                <ul class="nav navbar-nav ml-auto">
+
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="usersList.html">لیست کاربران</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="coursesList.html">لیست دوره ها</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div id="userData">
+                <h10 id="userNameProfile"> dummy </h10>
+                &nbsp;
+                <h10> : کاربر</h10>
+                &nbsp;
+                <i class="fas fa-user"></i>
+                &nbsp;
+            </div>
+            <a class="btn btn-danger" style="margin-left: 5px;" href="/logout">خروج</a>
+
+        </div>
+    </nav>
+
+
+    <div class="col-md-12 search-table-col">
+
+        <div>
+            <h4 id="courseTitle" class="text-center"></h4>
+        </div>
+
+        <div class="table-responsive table-bordered table table-hover table-bordered results">
+            <table id="table" class="table table-bordered table-hover text-center" data-search="true"
+                data-trim-on-search="false" data-search-on-enter-key="true">
+
+                <thead class="bill-header cs">
+                    <tr>
+                        <th data-field="id">شناسه</th>
+                        <th data-field="firstName">نام</th>
+                        <th data-field="lastName">نام خانوادگی</th>
+                        <th data-field="account.enabled" data-formatter="enabledFormatter" data-sortable="true">وضعیت</th>
+                        <th data-field="account.role" data-formatter="roleFormatter">دسترسی</th>
+                        <th data-field="account.username">نام کاربری</th>
+
+                        <th data-field="operate" data-events="window.operateEvents" data-formatter="operateFormatter">
+                            عملیات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+    <div id="message" class="alert alert-success text-right display-none" role="alert"><span><strong>
+            </strong></span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="assets/js/tableFormatters.js"></script>
+    <script src="assets/js/userNameCookie.js"></script>
+    <script src="assets/js/selectTeacher.js"></script>
+</body>
+
+</html>

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.stream.Collectors;
 
 @RestController
 public class ConfigController {
@@ -20,14 +19,15 @@ public class ConfigController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal == null || principal instanceof String) {
-            return new ConfigDto("guest");
+            return new ConfigDto("guest", new RoleDto("GUEST"));
         }
 
         Account account = (Account) principal;
         ConfigDto configDTO =
-                new ConfigDto(account.getUsername());
+                new ConfigDto(account.getUsername(), new RoleDto(account.getRole().getName()));
 
-        configDTO.setRoles(account.getRoles().stream().map(r -> new RoleDto(r.getName())).collect(Collectors.toSet()));
+//        configDTO.setRoles(account.getRoles().stream().map(r -> new RoleDto(r.getName())).collect(Collectors.toSet()));
+
 
         // set cookie again if client removes account cookie handy
         boolean cookieExisted = false;

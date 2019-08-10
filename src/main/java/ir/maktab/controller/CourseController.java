@@ -2,10 +2,10 @@ package ir.maktab.controller;
 
 import ir.maktab.controller.base.BaseRestFulService;
 import ir.maktab.mapper.CourseMapper;
+import ir.maktab.model.base.BaseDTO;
 import ir.maktab.model.course.Course;
 import ir.maktab.model.course.dto.CourseDto;
-import ir.maktab.model.student.Student;
-import ir.maktab.model.teacher.Teacher;
+import ir.maktab.model.user.User;
 import ir.maktab.service.course.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController extends BaseRestFulService<Course, CourseDto, Long, CourseService, CourseMapper> {
@@ -52,8 +52,8 @@ public class CourseController extends BaseRestFulService<Course, CourseDto, Long
 
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/{courseId}/setTeacher")
-    public ResponseEntity<CourseDto> setTeacher(@RequestBody Teacher teacher, @PathVariable("courseId") Long id) {
-        Course course = service.setTeacher(id, teacher);
+    public ResponseEntity<CourseDto> setTeacher(@RequestBody BaseDTO<Long> teacherId, @PathVariable("courseId") Long courseId) {
+        Course course = service.setTeacher(courseId, teacherId.getId());
         return ResponseEntity.ok(baseMapper.entityToDto(course, CourseDto.class));
     }
 

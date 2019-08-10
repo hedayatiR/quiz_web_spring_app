@@ -2,8 +2,7 @@ package ir.maktab.bootstrap;
 
 import ir.maktab.model.course.Course;
 import ir.maktab.model.role.Role;
-import ir.maktab.model.student.Student;
-import ir.maktab.model.teacher.Teacher;
+import ir.maktab.model.user.User;
 import ir.maktab.model.account.Account;
 import ir.maktab.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +22,18 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    private StudentRepository studentRepository;
-    private TeacherRepository teacherRepository;
+    private UserRepository userRepository;
     private RoleRepository roleRepository;
     private CourseRepository courseRepository;
-    private AccountRepository AccountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    public DevBootstrap(StudentRepository studentRepository, TeacherRepository teacherRepository, RoleRepository roleRepository, CourseRepository courseRepository, AccountRepository AccountRepository) {
-        this.studentRepository = studentRepository;
-        this.teacherRepository = teacherRepository;
+    public DevBootstrap(UserRepository userRepository, RoleRepository roleRepository, CourseRepository courseRepository, ir.maktab.repository.AccountRepository accountRepository) {
+        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
-        this.AccountRepository = AccountRepository;
+        this.accountRepository = accountRepository;
     }
-
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -55,58 +51,51 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         roleRepository.save(roleAdmin);
 
 
-
-
-        Collection<Role> rolesStudent = new HashSet<>();
-        rolesStudent.add(roleStudent);
-
-        Collection<Role> rolesAdmin = new HashSet<>();
-        rolesAdmin.add(roleAdmin);
-
         // admin
-        Account admin = new Account("admin", bCryptPasswordEncoder.encode("1"), rolesAdmin);
+        Account admin = new Account("admin", bCryptPasswordEncoder.encode("1"), roleAdmin);
         admin.setEnabled(true);
-        AccountRepository.save(admin);
+        accountRepository.save(admin);
 
         // student 1
-        Account account1 = new Account("reza", bCryptPasswordEncoder.encode("1"), rolesStudent);
+        Account account1 = new Account("reza", bCryptPasswordEncoder.encode("1"), roleStudent);
         account1.setEnabled(true);
-        Student student1 = new Student("رضا", "هدایتی" , account1);
-        studentRepository.save(student1);
+
+        User student1 = new User("رضا", "هدایتی", account1);
+        userRepository.save(student1);
+
 
         // student 2
-        Account account2 = new Account("ahmad", bCryptPasswordEncoder.encode("1"), rolesStudent);
-        account2.setEnabled(true);
-        Student student2 = new Student("احمد", "حسینی", account2);
-        studentRepository.save(student2);
+        Account account2 = new Account("ahmad", bCryptPasswordEncoder.encode("1"), roleStudent);
+        account1.setEnabled(true);
+
+        User student2 = new User("احمد", "حسینی", account2);
+        userRepository.save(student2);
+
 
         // student 3
-        Account account3 = new Account("naghi", bCryptPasswordEncoder.encode("1"), rolesStudent);
-        account3.setEnabled(false);
-        Student student3 = new Student("نقی", "معمولی", account3);
-        studentRepository.save(student3);
+        Account account3 = new Account("naghi", bCryptPasswordEncoder.encode("1"), roleStudent);
+        account1.setEnabled(false);
+        User student3 = new User("نقی", "معمولی", account3);
+        userRepository.save(student3);
 
-        Collection<Role> rolesTeacher = new HashSet<>();
-        rolesTeacher.add(roleTeacher);
 
         // teacher 1
-        Account account5 = new Account("ali", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        Account account5 = new Account("ali", bCryptPasswordEncoder.encode("1"), roleTeacher);
         account5.setEnabled(true);
-        Teacher teacher1 = new Teacher("علی", "واحدی", account5);
-        teacherRepository.save(teacher1);
+        User teacher1 = new User("علی", "واحدی", account5);
+        userRepository.save(teacher1);
 
         // teacher 2
-        Account account6 = new Account("homa", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        Account account6 = new Account("homa", bCryptPasswordEncoder.encode("1"), roleTeacher);
         account6.setEnabled(true);
-        Teacher teacher2 = new Teacher("هما", "سعادت", account6);
-        teacherRepository.save(teacher2);
+        User teacher2 = new User("هما", "سعادت", account6);
+        userRepository.save(teacher2);
 
         // teacher 3
-        Account account7 = new Account("mina", bCryptPasswordEncoder.encode("1"), rolesTeacher);
+        Account account7 = new Account("mina", bCryptPasswordEncoder.encode("1"), roleTeacher);
         account7.setEnabled(false);
-        Teacher teacher3 = new Teacher("مینا", "ساداتی", account7);
-        teacherRepository.save(teacher3);
-
+        User teacher3 = new User("مینا", "ساداتی", account7);
+        userRepository.save(teacher3);
 
 
         Date[] startDate = new Date[4];
@@ -121,11 +110,10 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         }
 
 
-        Course course1 = new Course("جاوا", 1L,
-                startDate[0],
-                endDate[0]);
+        Course course1 = new Course("جاوا", startDate[0], endDate[0]);
+
         course1.setTeacher(teacher1);
-        Set<Student> students1 = new HashSet<>();
+        Set<User> students1 = new HashSet<>();
         students1.add(student1);
         course1.setStudents(students1);
         courseRepository.save(course1);
@@ -135,11 +123,9 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 //
 //        String dateString = format.format( new Date()   );
 
-        Course course2 = new Course("PHP", 2L,
-                startDate[1],
-                endDate[1]);
+        Course course2 = new Course("PHP", startDate[1], endDate[1]);
         course2.setTeacher(teacher1);
-        Set<Student> students2 = new HashSet<>();
+        Set<User> students2 = new HashSet<>();
         students2.add(student1);
         students2.add(student2);
         course2.setStudents(students2);

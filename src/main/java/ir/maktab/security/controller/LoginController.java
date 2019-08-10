@@ -20,12 +20,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class LoginController {
     Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-//    @GetMapping("/login")
-//    public String login() {
-//        System.out.println("login empty");
-//        return "login";
-//    }
-
     @RequestMapping("/loginNeeded")
     public ResponseEntity loginManager() {
         System.out.println("loginNeeded");

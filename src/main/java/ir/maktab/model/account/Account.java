@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Setter
@@ -16,7 +17,7 @@ import java.util.Collection;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "Accounts")
+@Table(name = "accounts")
 public class Account extends BaseEntity<Long> implements UserDetails {
 
     @Column(nullable = false, unique = true)
@@ -27,30 +28,26 @@ public class Account extends BaseEntity<Long> implements UserDetails {
     @Transient
     private String repeatPassword;
 
-    //    private UserStatusEnum status;
     @Column(nullable = false)
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "Accounts_roles",
-            joinColumns = @JoinColumn(name = "Account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    protected Collection<Role> roles;
+    @ManyToOne
+    protected Role role;
 
 
-    public Account(String username, String password, Collection<Role> roles) {
+    public Account(String username, String password, Role role) {
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.role = role;
         this.enabled = false;
-//        this.status = UserStatusEnum.INACTIVATED;
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        Collection<Role> collection = new ArrayList<>();
+        collection.add(role);
+        return collection;
     }
 
 
@@ -68,11 +65,6 @@ public class Account extends BaseEntity<Long> implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
-//    @Override
-//    public boolean isEnabled() {
-//        return (this.status == UserStatusEnum.ACTIVATED);
-//    }
 
 //    @PrePersist
 //    public void prePersist() {

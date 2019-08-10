@@ -8,8 +8,6 @@ import java.util.Set;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course,Long> {
-    Course findByCode(Long code);
-
     Set<Course> findByTeacherId(Long id);
     Set<Course> findByTeacherAccountUsername(String username);
     Set<Course> findByStudentsId(Long id);
