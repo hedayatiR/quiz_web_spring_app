@@ -1,16 +1,18 @@
 package ir.maktab.service.user;
 
+import ir.maktab.mapper.UserMapper;
 import ir.maktab.model.user.User;
+import ir.maktab.model.user.dto.UserDto;
 import ir.maktab.service.base.BaseService;
 
-import java.util.Set;
+import java.util.Collection;
 
-public interface UserService extends BaseService<User, Long> {
+public interface UserService extends BaseService<User, UserDto, Long, UserMapper> {
 
-    User changeStatus(Long id);
+    UserDto changeStatus(Long id);
 
-    Set<User> findAllStudentsByCourseId(Long id);
+    Collection<UserDto> findAllStudentsByCourseId(Long id);
 
-    Set<User> findActivatedUsersByRole(String role);
-    Set<User> findAllActivatedUsers();
+    Collection<UserDto> findActivatedUsersByRole(String role);
+    Collection<UserDto> findAllActivatedUsers();
 }

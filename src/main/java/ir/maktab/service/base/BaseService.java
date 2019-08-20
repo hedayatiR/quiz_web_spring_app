@@ -1,17 +1,23 @@
 package ir.maktab.service.base;
 
+import ir.maktab.mapper.base.BaseMapper;
+import ir.maktab.model.base.BaseDTO;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
-public interface BaseService<E, PK extends Serializable>  {
+public interface BaseService<E, D extends BaseDTO<PK>, PK extends Serializable,
+        Mapper extends BaseMapper<E, D>> {
 
-    E save(E t);
+    D save(D d);
 
-    E update(E t);
+    D update(D d);
 
-    Set<E> findAll();
 
-    E findOne(PK id);
+    Collection<D> findAll();
+
+    D findOne(PK id);
 
     void delete(PK id);
 

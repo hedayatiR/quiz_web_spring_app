@@ -11,59 +11,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 @Setter
 @Getter
 
-public abstract class BaseRestFulService< E extends BaseEntity<PK>, D extends BaseDTO<PK>, PK extends Serializable,
-        Service extends BaseService<E, PK>, Mapper extends BaseMapper<E,D> > {
+public abstract class BaseRestFulService<E extends BaseEntity<PK>, D extends BaseDTO<PK>, PK extends Serializable,
+        Service extends BaseService<E, D, PK, Mapper>, Mapper extends BaseMapper<E, D>> {
 
     protected Service service;
-    protected Mapper baseMapper;
-
-    private  Class<D>  dtoClass;
-    private  Class<E>  entityClass;
 
 
-    public BaseRestFulService(Service service, Mapper baseMapper) {
+    public BaseRestFulService(Service service) {
         this.service = service;
-        this.baseMapper = baseMapper;
-
-        ParameterizedType genericSuperclass =  (ParameterizedType)  getClass () .getGenericSuperclass ();
-        Type typeD =  genericSuperclass.getActualTypeArguments () [ 1 ];
-        if  (typeD  instanceof  ParameterizedType) {
-            this .dtoClass =  (Class< D> ) ((ParameterizedType) typeD) .getRawType ();
-        }  else  {
-            this .dtoClass =  (Class< D> ) typeD;
-        }
-
-        Type typeE =  genericSuperclass.getActualTypeArguments () [ 0 ];
-        if  (typeE  instanceof  ParameterizedType) {
-            this .entityClass =  (Class< E> ) ((ParameterizedType) typeE) .getRawType ();
-        }  else  {
-            this .entityClass =  (Class< E> ) typeE;
-        }
-
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Set<D>> getAll() {
-        Set<E> entityList = service.findAll();
-        return ResponseEntity.ok(baseMapper.entityToDtoSet(entityList, dtoClass));
+    public ResponseEntity<Collection<D>> getAll() {
+        Collection<D> dtoCollection = service.findAll();
+        return ResponseEntity.ok(dtoCollection);
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/{id}")
     public ResponseEntity<D> getById(@PathVariable PK id) {
-        E e = service.findOne(id);
+        D dto = service.findOne(id);
 
-        if (e != null)
-            return ResponseEntity.ok(baseMapper.entityToDto(e, dtoClass));
+        if (dto != null)
+            return ResponseEntity.ok(dto);
         return ResponseEntity.notFound().build();
     }
 
@@ -77,14 +53,13 @@ public abstract class BaseRestFulService< E extends BaseEntity<PK>, D extends Ba
                     .build();
         }
 
-        E e = service.save(baseMapper.dtoToEntity(d, entityClass));
-        return ResponseEntity.ok(baseMapper.entityToDto(e, dtoClass));
+        D dSaved = service.save(d);
+
+        return ResponseEntity.ok(dSaved);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<D> update(@RequestBody D d) {
-
-        System.out.println(d);
 
         if (d.getId() == null) {
             return ResponseEntity
@@ -93,8 +68,8 @@ public abstract class BaseRestFulService< E extends BaseEntity<PK>, D extends Ba
                     .build();
         }
 
-        E e = service.update(baseMapper.dtoToEntity(d, entityClass));
-        return ResponseEntity.ok(baseMapper.entityToDto(e, dtoClass));
+        D updatedDto = service.update(d);
+        return ResponseEntity.ok(updatedDto);
     }
 
 

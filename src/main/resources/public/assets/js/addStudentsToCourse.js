@@ -146,7 +146,6 @@ $(document).ready(function () {
         // 2. oline operation - START
         $.ajax({
             method: "GET",
-
             url: "http://localhost:8080/api/users/students/activated",
             success: function (studentsJson, textStatus, xhr) {
 

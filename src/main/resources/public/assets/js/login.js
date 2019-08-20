@@ -13,7 +13,13 @@ $(document).ready(function () {
             data: formData,
             success: function (data, textStatus, request) {
 
+                console.log(data);
+                console.log(request);
+                var headers = request.getAllResponseHeaders().toLowerCase();
+                alert(headers);
+
                 var roles = request.getResponseHeader("ROLES");
+                console.log(roles);
                 if (roles === "STUDENT") {
                     window.location.href = "studentHome.html"
                 } else if (roles === "TEACHER") {
@@ -24,7 +30,13 @@ $(document).ready(function () {
             },
 
             error: function (request, textStatus, errorThrown) {
-                printErrorMessage('نام کاربری یا رمز عبور اشتباه است!');
+                console.log(request);
+                console.log(request.responseText);
+
+                if (request.responseText === "hesabet fall nist")
+                    printErrorMessage('شما در لیست انتظار برای تایید قرار گرفتید!');
+                else
+                    printErrorMessage('نام کاربری یا رمز عبور اشتباه است!');
             }
         });
 

@@ -1,23 +1,25 @@
 package ir.maktab.service.course;
 
+import ir.maktab.mapper.CourseMapper;
 import ir.maktab.model.course.Course;
-import ir.maktab.model.user.User;
+import ir.maktab.model.course.dto.CourseDto;
 import ir.maktab.service.base.BaseService;
 
+import java.util.Collection;
 import java.util.Set;
 
-public interface CourseService extends BaseService<Course, Long> {
+public interface CourseService extends BaseService<Course, CourseDto, Long, CourseMapper> {
 
-    Course removeStudents(Long id, Set<Long> studentsId);
+    CourseDto removeStudents(Long id, Set<Long> studentsId);
 
-    Course addStudents(Long id, Set<Long> studentsId);
+    CourseDto addStudents(Long id, Set<Long> studentsId);
 
-    Course setTeacher(Long id, Long teacherId);
+    CourseDto setTeacher(Long id, Long teacherId);
 
-    Set<Course> findAllByTeacherId(Long id);
+    Collection<CourseDto> findAllByTeacherId(Long id);
 
-    Set<Course> findAllByTeacherUsername(String username);
+    Collection<CourseDto> findAllByTeacherUsername(String username);
 
-    Set<Course> findAllByStudentId(Long id);
+    Collection<CourseDto> findAllByStudentId(Long id);
 
 }

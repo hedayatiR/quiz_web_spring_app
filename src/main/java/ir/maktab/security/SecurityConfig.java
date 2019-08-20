@@ -1,21 +1,19 @@
 package ir.maktab.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
 
     private String[] freeResources = new String[]{
             "/", "/**.html", "/assets/**", "/h2-console/**"
@@ -28,11 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private String[] STUDENT_ACCESS = new String[]{
-            "/api/students/**"
     };
 
-    private String[] USER_ACCESS = new String[]{
-            "/api/courses/findByTeacherUsername/**"
+    private String[] TEACHER_ACCESS = new String[]{
+            "/api/courses/findByTeacherUsername/**",
+            "/api/exams/**",
     };
 
     private String[] ADMIN_ACCESS = new String[]{
@@ -40,15 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
 
-    @Autowired
-    @Qualifier(value = "MyUserDetailsService")
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    @Qualifier(value = "MyUserDetailsService")
+//    private UserDetailsService userDetailsService;
 
 //    @Autowired
-//    private MyAuthExceptionHandlerEntryPoint myAuthExceptionHandlerEntryPoint;
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -56,11 +51,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+//    @Autowired
+//    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+//    }
 
+    @Bean
+    protected AuthenticationManager myAuthenticationManager() throws Exception {
+        return authenticationManager();
     }
+
 
 
     @Override
@@ -69,29 +69,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, SIGNUP_PERMIT).permitAll()
 
-                .anyRequest().permitAll()
+                .antMatchers("/api/questions/**").permitAll()
 
-//                .antMatchers(HttpMethod.POST, SIGNUP_PERMIT).permitAll()
-////                .antMatchers(STUDENT_ACCESS).hasAuthority("STUDENT")
-//                .antMatchers(USER_ACCESS).hasAuthority("user")
-//                .antMatchers("/api/config").authenticated()
-//                .antMatchers("/api/**").hasAuthority("ADMIN")
-//                .anyRequest().authenticated()
-////                .and()
-//                .exceptionHandling().authenticationEntryPoint(myAuthExceptionHandlerEntryPoint)
-                .and()
-                .formLogin()
-                .loginPage("/loginNeeded").permitAll()
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .failureForwardUrl("/login/failed")
-                .successForwardUrl("/login/succeed")
+                .antMatchers("/login").permitAll()
+                .antMatchers(STUDENT_ACCESS).hasAuthority("STUDENT")
+                .antMatchers(TEACHER_ACCESS).hasAuthority("TEACHER")
+                .antMatchers("/api/config").authenticated()
+                .antMatchers(ADMIN_ACCESS).hasAuthority("ADMIN")
+                .anyRequest().authenticated()
+
+//                .anyRequest().permitAll()
+
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/").deleteCookies("JSESSIONID", "account")
         ;
-    }
 
+    }
 
 }

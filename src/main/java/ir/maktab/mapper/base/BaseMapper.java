@@ -1,13 +1,13 @@
 package ir.maktab.mapper.base;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface BaseMapper<E, D> {
     E dtoToEntity(D d, Class<E> eClass);
 
     D entityToDto(E e, Class<D> dClass);
 
-    Set<E> dtoToEntitySet(Set<D> set, Class<E> eClass);
+    Collection<E> dtoToEntityCollection(Collection<D> collection, Class<E> eClass);
 
-    Set<D> entityToDtoSet(Set<E> set, Class<D> dClass);
+    Collection<D> entityToDtoCollection(Collection<E> collection, Class<D> dClass);
 }

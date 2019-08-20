@@ -4,17 +4,18 @@ import ir.maktab.model.role.dto.RoleDto;
 import ir.maktab.model.account.Account;
 import ir.maktab.security.controller.dto.ConfigDto;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class ConfigController {
 
-    @RequestMapping(value = "/api/config")
+    @GetMapping(value = "/api/config")
     public ConfigDto whoami(HttpServletRequest request, HttpServletResponse response) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -42,6 +43,7 @@ public class ConfigController {
 
         if (!cookieExisted){
             Cookie cookie = new Cookie("account", account.getUsername());
+            cookie.setPath("/");
             response.addCookie(cookie);
         }
 

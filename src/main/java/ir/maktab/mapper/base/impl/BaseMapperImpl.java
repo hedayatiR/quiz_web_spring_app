@@ -4,6 +4,7 @@ import ir.maktab.mapper.base.BaseMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,17 +28,17 @@ public class BaseMapperImpl<E,D> implements BaseMapper<E,D> {
     }
 
     @Override
-    public Set<E> dtoToEntitySet(Set<D> set, Class<E> eClass) {
+    public Collection<E> dtoToEntityCollection(Collection<D> collection, Class<E> eClass) {
 
-        Set<E> entitySet = set.stream()
+        Collection<E> entitySet = collection.stream()
                 .map(dto -> dtoToEntity(dto, eClass))
                 .collect(Collectors.toSet());
         return entitySet;
     }
 
     @Override
-    public Set<D> entityToDtoSet(Set<E> set, Class<D> dClass) {
-        Set<D> dtoSet = set.stream()
+    public Collection<D> entityToDtoCollection(Collection<E> collection, Class<D> dClass) {
+        Collection<D> dtoSet = collection.stream()
                 .map(entity -> entityToDto(entity, dClass))
                 .collect(Collectors.toSet());
         return dtoSet;

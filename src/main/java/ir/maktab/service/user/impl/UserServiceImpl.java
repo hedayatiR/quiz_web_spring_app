@@ -1,7 +1,10 @@
 package ir.maktab.service.user.impl;
 
+import ir.maktab.mapper.RoleMapper;
+import ir.maktab.mapper.UserMapper;
 import ir.maktab.model.role.Role;
 import ir.maktab.model.user.User;
+import ir.maktab.model.user.dto.UserDto;
 import ir.maktab.repository.AccountRepository;
 import ir.maktab.repository.RoleRepository;
 import ir.maktab.repository.UserRepository;
@@ -13,12 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 @Transactional
-public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
+public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long, UserRepository, UserMapper>
         implements UserService {
 
     @Autowired
@@ -28,34 +32,40 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
     AccountRepository accountRepository;
 
     @Autowired
+    RoleMapper roleMapper;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
-    public UserServiceImpl(UserRepository baseRepository) {
-        super(baseRepository);
+    public UserServiceImpl(UserRepository repository, UserMapper baseMapper) {
+        super(repository, baseMapper);
     }
 
 
     @Override
-    public User save(User t) {
+    public UserDto save(UserDto userDto) {
 
-        if (!(t.getAccount().getPassword().equals(t.getAccount().getRepeatPassword()))) {
+        User user = baseMapper.dtoToEntity(userDto, User.class);
+
+        if (!(user.getAccount().getPassword().equals(user.getAccount().getRepeatPassword()))) {
             System.out.println("PasswordMismatchException thrown");
             throw new PasswordMismatchException("Passwords mismatch shode!");
         }
 
-        Role role = roleRepository.findByName(t.getAccount().getRole().getName());
-        t.getAccount().setRole(role);
+        Role role = roleRepository.findByName(user.getAccount().getRole().getName());
+        user.getAccount().setRole(role);
 
         // encrypt password
-        t.getAccount().setPassword(bCryptPasswordEncoder.encode(t.getAccount().getPassword()));
-
-        return super.save(t);
+        user.getAccount().setPassword(bCryptPasswordEncoder.encode(userDto.getAccount().getPassword()));
+        User savedUser = repository.save(user);
+        return baseMapper.entityToDto(savedUser, UserDto.class);
     }
 
 
     @Override
-    public User update(User user) {
+    public UserDto update(UserDto userdto) {
+
+        User user = baseMapper.dtoToEntity(userdto, User.class);
 
         if ((user.getAccount().getPassword() == null) ||
                 (user.getAccount().getRepeatPassword() == null) ||
@@ -72,38 +82,42 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
             user.getAccount().setPassword(bCryptPasswordEncoder.encode(user.getAccount().getPassword()));
         }
 
-
-        return super.save(user); // super.save must be called not update
+        User savedUser = repository.save(user);
+        return baseMapper.entityToDto(savedUser, UserDto.class);
     }
 
     @Override
-    public User changeStatus(Long id) {
+    public UserDto changeStatus(Long id) {
         // some validation
 //        user.getUser().setStatus(status);
         Optional<User> user = repository.findById(id);
         user.get().getAccount().setEnabled(!(user.get().getAccount().isEnabled()));
 
-        return super.save(user.get());
+        User savedUser = repository.save(user.get());
+        return baseMapper.entityToDto(savedUser, UserDto.class);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Set<User> findAllStudentsByCourseId(Long id) {
-        return repository.findByStudentCoursesId(id);
+    public Collection<UserDto> findAllStudentsByCourseId(Long id) {
+        Set<User> users = repository.findByStudentCoursesId(id);
+        return baseMapper.entityToDtoCollection(users, UserDto.class);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Set<User> findActivatedUsersByRole(String role) {
-        return repository.findByAccount_EnabledAndAccount_Role_Name(true, role);
+    public Collection<UserDto> findActivatedUsersByRole(String role) {
+        Set<User> users = repository.findByAccount_EnabledAndAccount_Role_Name(true, role);
+        return baseMapper.entityToDtoCollection(users, UserDto.class);
     }
 
     @Override
-    public Set<User> findAllActivatedUsers() {
-        return repository.findByAccount_Enabled(true);
+    public Collection<UserDto> findAllActivatedUsers() {
+        Set<User> users = repository.findByAccount_Enabled(true);
+        return baseMapper.entityToDtoCollection(users, UserDto.class);
     }
 
 
-}
+    }

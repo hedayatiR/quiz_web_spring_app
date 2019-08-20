@@ -1,8 +1,11 @@
 // var selectedUserGlobal;
 var $table;
 var test = 0;
+var CreateCourse = false;
 $(document).ready(function () {
-    
+
+
+
     $table = $('#table');
 
     // uncomment one of below
@@ -95,7 +98,7 @@ $(document).ready(function () {
         console.log("createCourseForm clicked")
         e.preventDefault();
         // start of create course
-        if (document.getElementById('id_div').style.display === 'none') {
+        if (CreateCourse) {
 
             var valid = true;
 
@@ -205,9 +208,9 @@ $(document).ready(function () {
 
     $addCourseBtn.click(function () {
         //show add course modal
+        CreateCourse = true;
         $("#modalTitle").html('اضافه کردن دوره');
         document.getElementById('id01').style.display = 'block';
-        document.getElementById('id_div').style.display = 'none';
         $("#name_id").val('');
         $("#startDate_id").val('');
         $("#endDate_id").val('');
@@ -287,10 +290,9 @@ window.operateEvents = {
     }, // end of editTeacher event handler
 
     'click .editCourse': function (e, value, selectedCourse, index) {
-
+        CreateCourse = false;
         $("#modalTitle").html('ویرایش دوره');
         // show id field
-        document.getElementById('id_div').style.display = 'block';
         selectedCourseGlobal = selectedCourse;
         //show edit user modal
         document.getElementById('id01').style.display = 'block';
@@ -303,28 +305,3 @@ window.operateEvents = {
 
 }
 
-
-function compareDate(startDate, endDate) {
-    // part[0] : year
-    // part[1] : month
-    // part[2] : day
-    // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
-    // January - 0, February - 1, etc.
-    var startParts = startDate.split("/");
-    var endParts = endDate.split("/");
-    Number
-    console.log(startParts[0] + "-" + startParts[1] + "-" + startParts[2]);
-    console.log(endParts[0] + "-" + endParts[1] + "-" + endParts[2]);
-
-    if (!(Number(startParts[0]) === Number(endParts[0])))
-        return Number(endParts[0]) > Number(startParts[0]);
-
-    if (!(Number(startParts[1]) === Number(endParts[1])))
-        return Number(endParts[1]) > Number(startParts[1]);
-
-    if (!(Number(startParts[2]) === Number(endParts[2])))
-        return Number(endParts[2]) > Number(startParts[2]);
-
-    return false;
-
-}

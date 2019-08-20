@@ -9,6 +9,6 @@ import lombok.Data;
 public class UserDto extends BaseDTO<Long> {
     private String firstName;
     private String lastName;
-    private AccountDto Account;
+    private AccountDto account;
 
 }

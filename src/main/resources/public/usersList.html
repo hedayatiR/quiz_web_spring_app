@@ -67,7 +67,8 @@
             </div>
 
             <table id="table" class="table table-bordered table-hover text-center" data-checkbox-header="true"
-                data-toolbar="#toolbar" data-search="true" data-trim-on-search="false" data-search-on-enter-key="true">
+                data-toolbar="#toolbar" data-search="true" data-trim-on-search="false" data-search-on-enter-key="true"
+                data-unique-id="id">
 
                 <thead class="bill-header cs">
                     <tr>
@@ -76,8 +77,10 @@
                         <th data-field="id">شناسه</th>
                         <th data-field="firstName">نام</th>
                         <th data-field="lastName">نام خانوادگی</th>
-                        <th data-field="account.enabled" data-formatter="enabledFormatter" data-sortable="true">وضعیت</th>
-                        <th data-field="account.role.name" data-formatter="roleFormatter" data-sortable="true">دسترسی</th>
+                        <th data-field="account.enabled" data-formatter="enabledFormatter" data-sortable="true">وضعیت
+                        </th>
+                        <th data-field="account.role.name" data-formatter="roleFormatter" data-sortable="true">دسترسی
+                        </th>
                         <th data-field="account.username">نام کاربری</th>
 
                         <th data-field="operate" data-events="window.operateEvents" data-formatter="operateFormatter">
@@ -156,7 +159,8 @@
 
                         <div class="d-flex">
                             <div class="form-group" style="font-size: 16px;"><label>نام کاربری</label>
-                                <input id="userName_id" class="form-control" type="text" placeholder="نام کاربری" required>
+                                <input id="userName_id" class="form-control" type="text" placeholder="نام کاربری"
+                                    required>
                             </div>
 
                             <div class="form-group" style="font-size: 16px;"><label>رمز عبور</label>
@@ -164,7 +168,8 @@
                             </div>
 
                             <div class="form-group" style="font-size: 16px;"><label>تکرار رمز عبور</label>
-                                <input id="repeatPassword_id" class="form-control" type="password" placeholder="تکرار رمز عبور">
+                                <input id="repeatPassword_id" class="form-control" type="password"
+                                    placeholder="تکرار رمز عبور">
                             </div>
 
                         </div>

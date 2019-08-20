@@ -1,56 +1,32 @@
 // var selectedUserGlobal;
 var $table;
 var test = 0;
+var createExam = false;
 $(document).ready(function () {
     $table = $('#table');
+
+    // courseId = getParameterByName('id');
+    
+    // courseName = getParameterByName('name');
+
+    var courseId = localStorage.getItem("id");
+    // localStorage.removeItem("id");
+
+    var courseName = localStorage.getItem("name");
+    // localStorage.removeItem("id");
+
+    var startDate = localStorage.getItem("startDate");
+    // localStorage.removeItem("startDate");
+    var endDate = localStorage.getItem("endDate");
+    // localStorage.removeItem("endDate");
+
+
 
     // uncomment one of below
 
     // 1. offline test - START
     if (test === 1) {
-        var courseJson = [{
-            "id": 1,
-            "name": "c1",
-            "code": 1,
-            "startDate": "2019-10-10",
-            "endDate": "2019-10-12",
-            "teacher": {
-                "id": 1,
-                "firstName": "fn5",
-                "lastName": "ln5",
-                "role": {
-                    "id": 2,
-                    "name": "TEACHER"
-                },
-                "user": {
-                    "id": 3,
-                    "userName": "u5",
-                    "password": "p5",
-                    "status": "INACTIVATED"
-                }
-            }
-        }, {
-            "id": 2,
-            "name": "c2",
-            "code": 2,
-            "startDate": "2021-10-10",
-            "endDate": "2021-10-12",
-            "teacher": {
-                "id": 1,
-                "firstName": "fn5",
-                "lastName": "ln5",
-                "role": {
-                    "id": 2,
-                    "name": "TEACHER"
-                },
-                "user": {
-                    "id": 3,
-                    "userName": "u5",
-                    "password": "p5",
-                    "status": "INACTIVATED"
-                }
-            }
-        }];
+        var courseJson = [{}];
 
         $(function () {
 
@@ -64,13 +40,15 @@ $(document).ready(function () {
     } else {
 
         // 2. oline operation - START
+
+
         $.ajax({
             method: "GET",
-            url: "http://localhost:8080/api/courses",
-            success: function (coursesJson, textStatus, xhr) {
+            url: "http://localhost:8080/api/exams/findByCourseId/" + courseId,
+            success: function (examsJson, textStatus, xhr) {
 
                 $table.bootstrapTable({
-                    data: coursesJson
+                    data: examsJson
                 });
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -86,54 +64,103 @@ $(document).ready(function () {
         // 2. oline operation - END
     }
 
-    var form = $('#createCourseForm');
+    var form = $('#createExamForm');
 
     // on click of تایید - START ------------------------------------------------
     $(form).submit(function (e) {
 
-        console.log("createCourseForm clicked")
+        console.log("createExamForm clicked")
         e.preventDefault();
-        var message = $('#messageModal');
+        // start of create Exam
+        if (createExam) {
 
-        var course = {};
+            var valid = true;
 
-        course.name = $("#name_id").val();
-        course.startDate = $("#startDate_id").val();
-        course.endDate = $("#endDate_id").val();
+            // check takeDate is between course startDate and endDate
+            valid = ( compareDate(startDate, $("#takeDate_id").val()) ) && ( compareDate($("#takeDate_id").val(), endDate) );
+            
 
+            if (!valid) {
+                printErrorMessageModal('تاریخ آزمون در محدوده برگزاری دوره نیست!')
+            } else {
 
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "http://localhost:8080/api/courses",
-            data: JSON.stringify(course),
-            dataType: 'json',
-            success: function (createdCourse, textStatus, xhr) {
-                $table.bootstrapTable('append', createdCourse);
+                var Exam = {};
+                Exam.title = $("#title_id").val();
+                Exam.takeDate = $("#takeDate_id").val();
+                Exam.duration = $("#duration_id").val();
+                Exam.description = $("#description_id").val();
 
-                
-                console.log(xhr);
+                var courseOfExam = {};
+                courseOfExam.id = courseId;
+                Exam.course = courseOfExam;
 
-                $(message).removeClass('display-none');
-                $(message).removeClass('alert-warning');
-                $(message).addClass('alert-success');
-                $("#messageModal span strong").text('افزودن دوره با موفقیت انجام شد.');
-                $("#name_id").val('');
-                $("#startDate_id").val('');
-                $("#endDate_id").val('');
-            },
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "http://localhost:8080/api/exams",
+                    data: JSON.stringify(Exam),
+                    dataType: 'json',
+                    success: function (createdExam, textStatus, xhr) {
+                        $table.bootstrapTable('append', createdExam);
 
-            error: function (e2) {
-                console.log("ERROR: ", e2);
-                $(message).removeClass('display-none');
-                $(message).removeClass('alert-success');
-                $(message).addClass('alert-warning');
-                $("#messageModal span strong").text('خطایی در افزودن دوره رخ داده!');
+                        printSuccessMessageModal('افزودن آزمون با موفقیت انجام شد.');
+
+                        $("#title_id").val('');
+                        $("#takeDate_id").val('');
+                        $("#duration_id").val('');
+                        $("#description_id").val('');
+                    },
+
+                    error: function (e2) {
+                        console.log("ERROR: ", e2);
+                        printErrorMessageModal('خطایی در افزودن آزمون رخ داده!');
+                    }
+
+                }); // end of ajax
 
             }
+            // end of create exam
+        } else { // start of edit exam
+            var valid = true;
 
-        }); // end of ajax
+            // check takeDate is between course startDate and endDate
+            valid = ( compareDate(startDate, $("#takeDate_id").val()) ) && ( compareDate($("#takeDate_id").val(), endDate) );
 
+            if (!valid) {
+                printErrorMessageModal('تاریخ آزمون در محدوده برگزاری دوره نیست!')
+            } else {
+                selectedExamGlobal.title = $("#title_id").val();
+                selectedExamGlobal.takeDate = $("#takeDate_id").val();
+                selectedExamGlobal.duration = $("#duration_id").val();
+                selectedExamGlobal.description = $("#description_id").val();
+
+                console.log(JSON.stringify(selectedExamGlobal));
+
+                $.ajax({
+                    type: "PUT",
+                    contentType: "application/json",
+                    url: "http://localhost:8080/api/exams",
+                    data: JSON.stringify(selectedExamGlobal),
+                    dataType: 'json',
+                    success: function (data, textStatus, xhr) {
+
+                        $table.bootstrapTable('updateByUniqueId', {
+                            id: selectedExamGlobal.id,
+                            row: selectedExamGlobal
+                        });
+
+                        printSuccessMessageModal('ویرایش آزمون با موفقیت انجام شد.');
+                    },
+
+                    error: function (e2) {
+                        console.log("ERROR: ", e2);
+                        printErrorMessageModal('خطایی در ویرایش آزمون رخ داده!')
+                    }
+
+                }); // end of ajax
+            }
+
+        } // end of edit course
     });
     // on click of تایید - END ------------------------------------------------
 
@@ -149,14 +176,17 @@ $(document).ready(function () {
     // on click of بازگشت - END ------------------------------------------------
 
 
-    var $addCourseBtn = $('#addCourseBtn');
+    var $addCourseBtn = $('#addExamBtn');
 
     $addCourseBtn.click(function () {
+        createExam = true;
         //show add course modal
+        $("#modalTitle").html('ایجاد آزمون');
         document.getElementById('id01').style.display = 'block';
-        $("#name_id").val('');
-        $("#startDate_id").val('');
-        $("#endDate_id").val('');
+        $("#title_id").val('');
+        $("#takeDate_id").val('');
+        $("#duration_id").val('');
+        $("#description_id").val('');
     });
 
 
@@ -164,88 +194,52 @@ $(document).ready(function () {
 
 
 function operateFormatter() {
-    return '<a href="#" class="deleteTeacher btn btn-danger btn-xs"> <i class="fa fa-trash-o"></i> حذف استاد از درس </a> &nbsp;' +
-        '<a href="#" class="editTeacher btn btn-info btn-xs"><i class="fa fa-edit"></i> تغییر استاد </a> &nbsp;' +
-        '<a href="#" class="addStudents btn btn-warning btn-xs"> اضافه کردن دانشجو </a> &nbsp;' + 
-        '<a href="#" class="showStudents btn btn-success btn-xs"> لیست دانشجویان درس </a>'
-        
-        ;
+    return '<a href="#" class="deleteExam btn btn-danger btn-xs"> <i class="fa fa-trash-o"></i> حذف </a> &nbsp;' +
+        '<a href="#" class="editExam btn btn-info btn-xs"><i class="fa fa-edit"></i> ویرایش </a> &nbsp;';
 }
 
 window.operateEvents = {
-    'click .deleteTeacher': function (e, value, selectedCourse, index) {
+    'click .deleteExam': function (e, value, selectedExam, index) {
 
         if (confirm("مطمئنی؟")) {
-            
-            selectedCourse.teacher = {};
-            if (test === 1) {
-                console.log(jQuery.isEmptyObject(selectedCourse.teacher));
-                console.log(selectedCourse.teacher);
-                console.log(jQuery.isEmptyObject(selectedCourse.teacher));
-                $table.bootstrapTable('updateByUniqueId', {
-                    id: selectedCourse.id,
-                    row: selectedCourse
-                });
-            }
-
 
             $.ajax({
-                type: "PUT",
+                type: "DELETE",
                 contentType: "application/json",
-                url: "http://localhost:8080/api/courses",
-                data: JSON.stringify(selectedCourse),
-                dataType: 'json',
+                url: "http://localhost:8080/api/exams/" + selectedExam.id,
                 success: function (data, textStatus, xhr) {
 
-                    $table.bootstrapTable('updateByUniqueId', {
-                        id: selectedCourse.id,
-                        row: selectedCourse
-                    });
+                    $table.bootstrapTable('removeByUniqueId', selectedExam.id);
 
                     console.log(xhr);
 
                     $(message).removeClass('display-none');
                     $(message).removeClass('alert-warning');
                     $(message).addClass('alert-success');
-                    $("#message span strong").text('حذف استاد از درس با موفقیت انجام شد.');
+                    $("#message span strong").text('حذف آزمون با موفقیت انجام شد.');
                 }
             }); // end of ajax
 
         }
     }, // end of deleteTeacher event handler
 
-    'click .editTeacher': function (e, value, selectedCourse, index) {
-        
-        var queryString = "?id=" + selectedCourse.id + "&name=" + selectedCourse.name;
-        window.location.href = "selectTeacher.html" + queryString;
-    }, // end of editTeacher event handler
+    'click .editExam': function (e, value, selectedExam, index) {
 
-    'click .addStudents': function (e, value, selectedCourse, index) {
-        
-        var queryString = "?id=" + selectedCourse.id + "&name=" + selectedCourse.name;
-        window.location.href = "addStudentsToCourse.html" + queryString;
-    }, // end of editTeacher event handler
+        createExam = false;
+        $("#modalTitle").html('ویرایش آزمون');
+        // show id field
+        selectedExamGlobal = selectedExam;
+        //show edit user modal
+        document.getElementById('id01').style.display = 'block';
+        // fill form field
+        $("#title_id").val(selectedExam.title);
+        $("#takeDate_id").val(selectedExam.takeDate);
+        $("#duration_id").val(selectedExam.duration);
+        $("#description_id").val(selectedExam.description);
 
-    'click .showStudents': function (e, value, selectedCourse, index) {
-        
-        var queryString = "?id=" + selectedCourse.id + "&name=" + selectedCourse.name;
-        window.location.href = "showStudentsOfCourse.html" + queryString;
+
+
+
     } // end of editTeacher event handler
-
-}
-
-function teacherNmeFormatter(value, row, index) {
-    if (jQuery.isEmptyObject(row.teacher))
-        return "-";
-    else
-        return row.teacher.firstName + " " + row.teacher.lastName;
-}
-
-function printErrorMessage(text) {
-
-    $("#message").removeClass('display-none');
-    $("#message").removeClass('alert-success');
-    $("#message").addClass('alert-warning');
-    $("#message span strong").html(text);
 
 }

@@ -1,6 +1,7 @@
 package ir.maktab.model.course;
 
 import ir.maktab.model.base.BaseEntity;
+import ir.maktab.model.exam.Exam;
 import ir.maktab.model.user.User;
 
 import lombok.Getter;
@@ -38,6 +39,9 @@ public class Course extends BaseEntity<Long> {
 
     @ManyToOne
     private User teacher;
+
+    @OneToMany(mappedBy = "course")
+    private Collection<Exam> exams;
 
 
     public Course(String name, Date startDate, Date endDate) {

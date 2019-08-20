@@ -10,21 +10,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-
-    @ExceptionHandler(PasswordMismatchException.class)
+    @ExceptionHandler({PasswordMismatchException.class, InvalidInputException.class})
     public final ResponseEntity<String> handlePasswordMismatchException(Exception ex) {
-        System.out.println("Global PasswordMismatchException captured");
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidInputException.class)
-    public final ResponseEntity<String> handleInvalidInputException(Exception ex) {
-        System.out.println("Global handleInvalidInputException captured");
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    @ExceptionHandler({UnauthorizedException.class})
+    public final ResponseEntity<String> handleUnauthorizedException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.UNAUTHORIZED);
     }
-
-
-
-
 
 }

@@ -11,55 +11,56 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.Collection;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
 public class UserController extends BaseRestFulService<User, UserDto, Long, UserService, UserMapper> {
 
-
     @Autowired
-    public UserController(UserService baseService, UserMapper userMapper) {
-        super(baseService, userMapper);
+    public UserController(UserService service) {
+        super(service);
     }
 
 
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/findStudentsByCourse/{id}")
-    public ResponseEntity<Set<UserDto>> findAllByCourseId(@PathVariable("id") Long id) {
-        Set<User> students = service.findAllStudentsByCourseId(id);
+    public ResponseEntity<Collection<UserDto>> findAllByCourseId(@PathVariable("id") Long id) {
+
+        Collection<UserDto> students = service.findAllStudentsByCourseId(id);
         if (students == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(baseMapper.entityToDtoSet(students, UserDto.class));
+        return ResponseEntity.ok(students);
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/students/activated")
-    public ResponseEntity<Set<UserDto>> findActivatedStudents() {
-        Set<User> users = service.findActivatedUsersByRole("STUDENT");
+    public ResponseEntity<Collection<UserDto>> findActivatedStudents() {
+        Collection<UserDto> users = service.findActivatedUsersByRole("STUDENT");
 
         if (users == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(baseMapper.entityToDtoSet(users, UserDto.class));
+        return ResponseEntity.ok(users);
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/teachers/activated")
-    public ResponseEntity<Set<UserDto>> findActivatedTeachers() {
-        Set<User> users = service.findActivatedUsersByRole("TEACHER");
+    public ResponseEntity<Collection<UserDto>> findActivatedTeachers() {
+        Collection<UserDto> users = service.findActivatedUsersByRole("TEACHER");
 
         if (users == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(baseMapper.entityToDtoSet(users, UserDto.class));
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/allActivated")
-    public ResponseEntity<Set<UserDto>> findAllActivatedUsers() {
-        Set<User> users = service.findAllActivatedUsers();
+    public ResponseEntity<Collection<UserDto>> findAllActivatedUsers() {
+        Collection<UserDto> users = service.findAllActivatedUsers();
 
         if (users == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(baseMapper.entityToDtoSet(users, UserDto.class));
+        return ResponseEntity.ok(users);
     }
 
 

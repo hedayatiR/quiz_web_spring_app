@@ -1,6 +1,8 @@
 package ir.maktab.service.course.impl;
 
+import ir.maktab.mapper.CourseMapper;
 import ir.maktab.model.course.Course;
+import ir.maktab.model.course.dto.CourseDto;
 import ir.maktab.model.user.User;
 import ir.maktab.repository.CourseRepository;
 import ir.maktab.repository.UserRepository;
@@ -11,26 +13,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 @Transactional
-public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepository>
+public class CourseServiceImpl extends BaseServiceImpl<Course, CourseDto, Long, CourseRepository, CourseMapper>
         implements CourseService {
+
 
     @Autowired
     private UserRepository userRepository;
 
-
-    public CourseServiceImpl(CourseRepository repository) {
-        super(repository);
+    public CourseServiceImpl(CourseRepository repository, CourseMapper baseMapper) {
+        super(repository, baseMapper);
     }
 
 
     @Override
-    public Course setTeacher(Long id, Long teacherId) {
+    public CourseDto setTeacher(Long id, Long teacherId) {
         // some validation
         User teacher = userRepository.findById(teacherId).get();
 
@@ -45,20 +48,23 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
         Optional<Course> course = repository.findById(id);
         course.get().setTeacher(teacher);
 
-        return repository.save(course.get());
+        Course editedCourse = repository.save(course.get());
+
+        return (baseMapper.entityToDto(editedCourse, CourseDto.class));
     }
 
     @Override
-    public Course removeStudents(Long id, Set<Long> studentsId) {
+    public CourseDto removeStudents(Long id, Set<Long> studentsId) {
         Optional<Course> course = repository.findById(id);
         course.get().removeStudents(studentsId);
 
-        return repository.save(course.get());
+        Course editedCourse = repository.save(course.get());
+        return (baseMapper.entityToDto(editedCourse, CourseDto.class));
     }
 
 
     @Override
-    public Course addStudents(Long id, Set<Long> studentsId) {
+    public CourseDto addStudents(Long id, Set<Long> studentsId) {
         // some validation
         Optional<Course> course = repository.findById(id);
 
@@ -74,26 +80,33 @@ public class CourseServiceImpl extends BaseServiceImpl<Course, Long, CourseRepos
             course.get().setStudents(students);
         }
 
-        return repository.save(course.get());
+        Course editedCourse = repository.save(course.get());
+        return (baseMapper.entityToDto(editedCourse, CourseDto.class));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Course> findAllByTeacherId(Long id) {
-        return repository.findByTeacherId(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<Course> findAllByTeacherUsername(String username) {
-        return repository.findByTeacherAccountUsername(username);
+    public Collection<CourseDto> findAllByTeacherId(Long id) {
+        Set<Course> editedCourses = repository.findByTeacherId(id);
+        return (baseMapper.entityToDtoCollection(editedCourses, CourseDto.class));
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Course> findAllByStudentId(Long id) {
-        return repository.findByStudentsId(id);
+    public Collection<CourseDto> findAllByTeacherUsername(String username) {
+
+        Set<Course> editedCourses = repository.findByTeacherAccountUsername(username);
+        return (baseMapper.entityToDtoCollection(editedCourses, CourseDto.class));
+
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<CourseDto> findAllByStudentId(Long id) {
+        Set<Course> editedCourses = repository.findByStudentsId(id);
+        return (baseMapper.entityToDtoCollection(editedCourses, CourseDto.class));
     }
 
 }

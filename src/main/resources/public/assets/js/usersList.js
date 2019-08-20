@@ -77,12 +77,11 @@ $(document).ready(function () {
 
                 console.log(studentsJson);
 
-                // if (String($table.bootstrapTable('getData')[0]).endsWith("Element]")) {
-                    $table.bootstrapTable({
-                        data: studentsJson
-                    });
+                $table.bootstrapTable({
+                    data: studentsJson
+                });
                 // } else
-                    // $table.bootstrapTable('append', studentsJson);
+                // $table.bootstrapTable('append', studentsJson);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 switch (xhr.status) {
@@ -239,43 +238,13 @@ $(document).ready(function () {
 
     // on click of بازگشت - END ------------------------------------------------
 
-
-
-    $("#table").on("click", ".remove", function (e) {
-
-        e.preventDefault();
-
-        if (test === 1) {
-            $(this).closest('tr').remove();
-        }
-
-        if (confirm("مطمئنی؟")) {
-            var destURL = "http://localhost:8080/api/users/";
-
-            // var role = $(this).closest('tr').find('td:eq(5)').text();
-            var userId = $(this).closest('tr').find('td:eq(1)').text();
-            var current = $(this);
-
-            $.ajax({
-                method: "DELETE",
-                url: destURL + userId,
-                success: function (dummy, textStatus, xhr) {
-                    current.closest('tr').remove();
-                }
-            }); // end of ajax
-
-        }
-    });
-
-
-
     var $addUserBtn = $('#addUserBtn');
 
     $addUserBtn.click(function () {
         //show edit user modal
         $("#modalTitle").html('ایجاد کاربر');
-        $('#password_id').prop('required',true);
-        $('#repeatPassword_id').prop('required',true);
+        $('#password_id').prop('required', true);
+        $('#repeatPassword_id').prop('required', true);
 
         document.getElementById('role_id').disabled = false;
         document.getElementById('id01').style.display = 'block';
@@ -339,8 +308,8 @@ window.operateEvents = {
     'click .edit': function (e, value, selectedUser, index) {
 
         $("#modalTitle").html('ویرایش کاربر');
-        $('#password_id').prop('required',false);
-        $('#repeatPassword_id').prop('required',false);
+        $('#password_id').prop('required', false);
+        $('#repeatPassword_id').prop('required', false);
         // show id field
         document.getElementById('id_div').style.display = 'block';
         selectedUserGlobal = selectedUser;
@@ -362,6 +331,26 @@ window.operateEvents = {
         $("#userName_id").val(selectedUser.account.username);
 
         // $("#password_id").val(selectedUser.user.password);
-    } // end of edit event handler
+    }, // end of edit event handler
 
+    'click .remove': function (e, value, selectedUser, index) {
+        if (confirm("مطمئنی؟")) {
+            var destURL = "http://localhost:8080/api/users/";
+
+            $.ajax({
+                method: "DELETE",
+                url: destURL + selectedUser.id,
+                success: function (dummy, textStatus, xhr) {
+                    $table.bootstrapTable('removeByUniqueId', selectedUser.id);
+                    $(message).removeClass('display-none');
+                    $(message).removeClass('alert-warning');
+                    $(message).addClass('alert-success');
+                    $("#message span strong").text('حذف کاربر با موفقیت انجام شد.');
+                }
+            }); // end of ajax
+
+
+        }
+
+    }
 }

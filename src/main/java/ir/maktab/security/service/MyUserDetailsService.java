@@ -28,11 +28,6 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-//        if (account.getStatus() == UserStatusEnum.INACTIVATED) {
-//            System.out.println("DisabledException thrown");
-//            throw new DisabledException("hesab faaal niiii");
-//        }
-
         logger.info("Account " + username + " is found." );
         return account;
     }
